@@ -47,7 +47,6 @@ class ConfiguredHolidayCalendarLoaderTest {
         ConfiguredHolidayCalendarLoader loader = new ConfiguredHolidayCalendarLoader(List.of(first, second));
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, loader::loadAll);
-        assertTrue(
-                exception.getMessage().contains("Duplicate Chinese workday calendar configuration for year 2027"));
+        assertTrue(exception.getMessage().contains("Duplicate Chinese workday calendar configuration for year 2027"));
     }
 }

@@ -36,9 +36,7 @@ class ExternalHolidayCalendarLoaderTest {
 
     @Test
     void rejectsDatesOutsideFileYear() throws Exception {
-        Files.writeString(
-                tempDir.resolve("2027.properties"),
-                "holidays=2028-01-01\nmakeUpWorkdays=\n");
+        Files.writeString(tempDir.resolve("2027.properties"), "holidays=2028-01-01\nmakeUpWorkdays=\n");
 
         ExternalHolidayCalendarLoader loader = new ExternalHolidayCalendarLoader(tempDir);
 
@@ -49,9 +47,7 @@ class ExternalHolidayCalendarLoaderTest {
 
     @Test
     void rejectsConflictingHolidayAndMakeUpWorkday() throws Exception {
-        Files.writeString(
-                tempDir.resolve("2027.properties"),
-                "holidays=2027-10-01\nmakeUpWorkdays=2027-10-01\n");
+        Files.writeString(tempDir.resolve("2027.properties"), "holidays=2027-10-01\nmakeUpWorkdays=2027-10-01\n");
 
         ExternalHolidayCalendarLoader loader = new ExternalHolidayCalendarLoader(tempDir);
 

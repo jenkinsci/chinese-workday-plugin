@@ -10,20 +10,18 @@ final class HolidayCalendarParser {
     private HolidayCalendarParser() {}
 
     static HolidaySchedule parse(int year, Properties properties, String sourceDescription) {
-        Set<LocalDate> holidays = parseDateSet(
-                year, properties.getProperty("holidays"), "holidays", sourceDescription);
-        Set<LocalDate> makeUpWorkdays = parseDateSet(
-                year, properties.getProperty("makeUpWorkdays"), "makeUpWorkdays", sourceDescription);
+        Set<LocalDate> holidays = parseDateSet(year, properties.getProperty("holidays"), "holidays", sourceDescription);
+        Set<LocalDate> makeUpWorkdays =
+                parseDateSet(year, properties.getProperty("makeUpWorkdays"), "makeUpWorkdays", sourceDescription);
 
         Set<LocalDate> conflicts = new LinkedHashSet<>(holidays);
         conflicts.retainAll(makeUpWorkdays);
         if (!conflicts.isEmpty()) {
-            throw new IllegalArgumentException(
-                    "Conflicting dates in "
-                            + sourceDescription
-                            + ": "
-                            + conflicts
-                            + " appear in both holidays and makeUpWorkdays.");
+            throw new IllegalArgumentException("Conflicting dates in "
+                    + sourceDescription
+                    + ": "
+                    + conflicts
+                    + " appear in both holidays and makeUpWorkdays.");
         }
 
         return new HolidaySchedule(holidays, makeUpWorkdays);
@@ -53,26 +51,19 @@ final class HolidayCalendarParser {
         String[] bounds = value.split("\\.\\.");
         if (bounds.length != 2) {
             throw new IllegalArgumentException(
-                    "Invalid date range '"
-                            + value
-                            + "' for "
-                            + fieldName
-                            + " in "
-                            + sourceDescription
-                            + ".");
+                    "Invalid date range '" + value + "' for " + fieldName + " in " + sourceDescription + ".");
         }
 
         LocalDate start = parseDate(year, bounds[0].trim(), fieldName, sourceDescription);
         LocalDate end = parseDate(year, bounds[1].trim(), fieldName, sourceDescription);
         if (end.isBefore(start)) {
-            throw new IllegalArgumentException(
-                    "Invalid date range '"
-                            + value
-                            + "' for "
-                            + fieldName
-                            + " in "
-                            + sourceDescription
-                            + ": end date is before start date.");
+            throw new IllegalArgumentException("Invalid date range '"
+                    + value
+                    + "' for "
+                    + fieldName
+                    + " in "
+                    + sourceDescription
+                    + ": end date is before start date.");
         }
 
         LocalDate current = start;
@@ -88,25 +79,12 @@ final class HolidayCalendarParser {
             date = LocalDate.parse(value);
         } catch (RuntimeException ex) {
             throw new IllegalArgumentException(
-                    "Invalid date '"
-                            + value
-                            + "' for "
-                            + fieldName
-                            + " in "
-                            + sourceDescription
-                            + ".",
-                    ex);
+                    "Invalid date '" + value + "' for " + fieldName + " in " + sourceDescription + ".", ex);
         }
 
         if (date.getYear() != year) {
             throw new IllegalArgumentException(
-                    "Date "
-                            + date
-                            + " in "
-                            + sourceDescription
-                            + " does not belong to year "
-                            + year
-                            + ".");
+                    "Date " + date + " in " + sourceDescription + " does not belong to year " + year + ".");
         }
         return date;
     }

@@ -58,8 +58,7 @@ final class BundledHolidayCalendarLoader {
         }
     }
 
-    private static List<Integer> discoverYearsFromFileSystem(URL resourceUrl)
-            throws IOException, URISyntaxException {
+    private static List<Integer> discoverYearsFromFileSystem(URL resourceUrl) throws IOException, URISyntaxException {
         try (Stream<Path> stream = Files.list(Path.of(resourceUrl.toURI()))) {
             return stream.map(Path::getFileName)
                     .map(Path::toString)

@@ -18,16 +18,14 @@ class ChineseWorkdayGlobalConfigurationTest {
 
     @Test
     void validatesMakeUpWorkdayDateRangeOrder() {
-        FormValidation validation =
-                configuration.doCheckMakeUpWorkdays("2027-09-27..2027-09-26", "2027", "");
+        FormValidation validation = configuration.doCheckMakeUpWorkdays("2027-09-27..2027-09-26", "2027", "");
 
         assertEquals(FormValidation.Kind.ERROR, validation.kind);
     }
 
     @Test
     void validatesConflictBetweenHolidayAndMakeUpWorkday() {
-        FormValidation validation =
-                configuration.doCheckMakeUpWorkdays("2027-10-01", "2027", "2027-10-01..2027-10-03");
+        FormValidation validation = configuration.doCheckMakeUpWorkdays("2027-10-01", "2027", "2027-10-01..2027-10-03");
 
         assertEquals(FormValidation.Kind.ERROR, validation.kind);
     }

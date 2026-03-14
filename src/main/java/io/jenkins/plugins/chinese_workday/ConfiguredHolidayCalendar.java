@@ -64,9 +64,7 @@ public class ConfiguredHolidayCalendar {
     }
 
     String sourceDescription() {
-        return "Jenkins system configuration for Chinese workday year "
-                + (year.isBlank() ? "(blank)" : year)
-                + ".";
+        return "Jenkins system configuration for Chinese workday year " + (year.isBlank() ? "(blank)" : year) + ".";
     }
 
     static int parseYear(String value) {
@@ -175,12 +173,11 @@ public class ConfiguredHolidayCalendar {
         Set<LocalDate> conflicts = new LinkedHashSet<>(holidays);
         conflicts.retainAll(makeUpWorkdays);
         if (!conflicts.isEmpty()) {
-            throw new IllegalArgumentException(
-                    "Conflicting dates in "
-                            + sourceDescription
-                            + ": "
-                            + conflicts
-                            + " appear in both holidays and makeUpWorkdays.");
+            throw new IllegalArgumentException("Conflicting dates in "
+                    + sourceDescription
+                    + ": "
+                    + conflicts
+                    + " appear in both holidays and makeUpWorkdays.");
         }
     }
 

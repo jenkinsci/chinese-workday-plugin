@@ -2,7 +2,6 @@ package io.jenkins.plugins.chinese_workday;
 
 import hudson.Extension;
 import hudson.RelativePath;
-import hudson.Util;
 import hudson.model.Descriptor.FormException;
 import hudson.util.FormValidation;
 import java.util.ArrayList;

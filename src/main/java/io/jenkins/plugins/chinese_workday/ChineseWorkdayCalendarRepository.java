@@ -15,7 +15,9 @@ final class ChineseWorkdayCalendarRepository {
     private final ConfiguredHolidayCalendarLoader configuredLoader;
 
     ChineseWorkdayCalendarRepository() {
-        this(defaultExternalCalendarDirectory(), ChineseWorkdayGlobalConfiguration.get().getCalendars());
+        this(
+                defaultExternalCalendarDirectory(),
+                ChineseWorkdayGlobalConfiguration.get().getCalendars());
     }
 
     ChineseWorkdayCalendarRepository(Path externalCalendarDirectory) {
@@ -26,7 +28,8 @@ final class ChineseWorkdayCalendarRepository {
         this(defaultExternalCalendarDirectory(), configuredCalendars);
     }
 
-    ChineseWorkdayCalendarRepository(Path externalCalendarDirectory, List<ConfiguredHolidayCalendar> configuredCalendars) {
+    ChineseWorkdayCalendarRepository(
+            Path externalCalendarDirectory, List<ConfiguredHolidayCalendar> configuredCalendars) {
         this.externalLoader = new ExternalHolidayCalendarLoader(externalCalendarDirectory);
         this.configuredLoader = new ConfiguredHolidayCalendarLoader(configuredCalendars);
     }
@@ -60,9 +63,8 @@ final class ChineseWorkdayCalendarRepository {
 
     private static Path defaultExternalCalendarDirectory() {
         Jenkins jenkins = Jenkins.getInstanceOrNull();
-        Path root = jenkins != null
-                ? jenkins.getRootDir().toPath()
-                : Path.of(System.getProperty("user.home"), ".jenkins");
+        Path root =
+                jenkins != null ? jenkins.getRootDir().toPath() : Path.of(System.getProperty("user.home"), ".jenkins");
         return root.resolve(EXTERNAL_DIRECTORY);
     }
 }

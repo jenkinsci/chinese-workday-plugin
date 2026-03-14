@@ -25,7 +25,8 @@ class ChineseWorkdayBuilderTest {
 
         project = jenkins.configRoundtrip(project);
 
-        ChineseWorkdayBuilder reloaded = (ChineseWorkdayBuilder) project.getBuildersList().get(0);
+        ChineseWorkdayBuilder reloaded =
+                (ChineseWorkdayBuilder) project.getBuildersList().get(0);
         jenkins.assertEqualDataBoundBeans(builder, reloaded);
     }
 
@@ -91,8 +92,7 @@ class ChineseWorkdayBuilderTest {
     @Test
     void isWorkdayPipelineStepReturnsBooleanResult(JenkinsRule jenkins) throws Exception {
         WorkflowJob job = jenkins.createProject(WorkflowJob.class, "test-pipeline-step");
-        String pipelineScript =
-                """
+        String pipelineScript = """
                 def result = isWorkday date: '2025-10-03', timeZone: 'Asia/Shanghai'
                 echo "workday=${result}"
                 """;
@@ -106,8 +106,7 @@ class ChineseWorkdayBuilderTest {
     @Test
     void isHolidayPipelineStepReturnsBooleanResult(JenkinsRule jenkins) throws Exception {
         WorkflowJob job = jenkins.createProject(WorkflowJob.class, "test-holiday-pipeline-step");
-        String pipelineScript =
-                """
+        String pipelineScript = """
                 def result = isHoliday date: '2025-10-03', timeZone: 'Asia/Shanghai'
                 echo "holiday=${result}"
                 """;
@@ -121,8 +120,7 @@ class ChineseWorkdayBuilderTest {
     @Test
     void isWorkdayPipelineStepUsesAsiaShanghaiByDefault(JenkinsRule jenkins) throws Exception {
         WorkflowJob job = jenkins.createProject(WorkflowJob.class, "test-default-timezone-step");
-        String pipelineScript =
-                """
+        String pipelineScript = """
                 def result = isWorkday date: '2025-10-03'
                 echo "workday=${result}"
                 """;
@@ -136,8 +134,7 @@ class ChineseWorkdayBuilderTest {
     @Test
     void supportedYearsPipelineStepReturnsBundledYears(JenkinsRule jenkins) throws Exception {
         WorkflowJob job = jenkins.createProject(WorkflowJob.class, "test-supported-years-step");
-        String pipelineScript =
-                """
+        String pipelineScript = """
                 def years = chineseWorkdaySupportedYears()
                 echo "years=${years.join(',')}"
                 """;
@@ -153,8 +150,7 @@ class ChineseWorkdayBuilderTest {
         configureGlobalCalendar(2027, "2027-10-01..2027-10-03", "2027-09-26");
 
         WorkflowJob job = jenkins.createProject(WorkflowJob.class, "test-supported-years-step-with-configured");
-        String pipelineScript =
-                """
+        String pipelineScript = """
                 def years = chineseWorkdaySupportedYears()
                 echo "years=${years.join(',')}"
                 """;
@@ -170,8 +166,7 @@ class ChineseWorkdayBuilderTest {
         configureGlobalCalendar(2027, "2027-10-01..2027-10-03", "2027-09-26");
 
         WorkflowJob job = jenkins.createProject(WorkflowJob.class, "test-configured-year-step");
-        String pipelineScript =
-                """
+        String pipelineScript = """
                 echo "workday=${isWorkday(date: '2027-10-02', timeZone: 'Asia/Shanghai')}"
                 echo "makeUp=${isWorkday(date: '2027-09-26', timeZone: 'Asia/Shanghai')}"
                 """;
