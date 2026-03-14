@@ -85,6 +85,7 @@ mvn hpi:run
 
 - `Date`：可选，使用 ISO 格式 `yyyy-MM-dd`；留空表示使用所选时区下的“今天”
 - `Time zone`：可选，默认值为 `Asia/Shanghai`
+- `Fail build on non-workday`：可选；启用后，如果判断结果是非工作日，则当前构建步骤会失败，后续 Freestyle 构建步骤不会继续执行
 
 示例：
 

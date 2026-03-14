@@ -20,6 +20,7 @@ class ChineseWorkdayBuilderTest {
         FreeStyleProject project = jenkins.createFreeStyleProject();
         ChineseWorkdayBuilder builder = new ChineseWorkdayBuilder("2026-01-28");
         builder.setTimeZone("Asia/Shanghai");
+        builder.setFailOnNonWorkday(true);
         project.getBuildersList().add(builder);
 
         project = jenkins.configRoundtrip(project);
@@ -54,6 +55,21 @@ class ChineseWorkdayBuilderTest {
         jenkins.assertLogContains("No Chinese holiday calendar is available for 2030.", build);
         jenkins.assertLogContains("Supported years: 2025, 2026", build);
         jenkins.assertLogContains("Manage Jenkins > System > Chinese Workday", build);
+    }
+
+    @Test
+    void freestyleBuildFailsOnNonWorkdayWhenConfigured(JenkinsRule jenkins) throws Exception {
+        FreeStyleProject project = jenkins.createFreeStyleProject();
+        ChineseWorkdayBuilder builder = new ChineseWorkdayBuilder("2025-10-03");
+        builder.setTimeZone("Asia/Shanghai");
+        builder.setFailOnNonWorkday(true);
+        project.getBuildersList().add(builder);
+
+        FreeStyleBuild build = jenkins.assertBuildStatus(Result.FAILURE, project.scheduleBuild2(0));
+
+        jenkins.assertLogContains("Workday: false", build);
+        jenkins.assertLogContains("Holiday: true", build);
+        jenkins.assertLogContains("Resolved date '2025-10-03' is not a Chinese workday", build);
     }
 
     @Test

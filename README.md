@@ -86,6 +86,8 @@ Available fields:
 
 - `Date`: optional, ISO format `yyyy-MM-dd`; blank means "today" in the selected time zone
 - `Time zone`: optional, defaults to `Asia/Shanghai`
+- `Fail build on non-workday`: optional; if enabled, the build step fails on non-workdays so later
+  Freestyle build steps do not run
 
 Example:
 

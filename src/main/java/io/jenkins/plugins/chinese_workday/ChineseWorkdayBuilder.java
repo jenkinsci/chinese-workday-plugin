@@ -28,6 +28,7 @@ public class ChineseWorkdayBuilder extends Builder implements SimpleBuildStep {
 
     private final String date;
     private String timeZone = DEFAULT_TIME_ZONE;
+    private boolean failOnNonWorkday;
 
     @DataBoundConstructor
     public ChineseWorkdayBuilder(String date) {
@@ -45,6 +46,15 @@ public class ChineseWorkdayBuilder extends Builder implements SimpleBuildStep {
     @DataBoundSetter
     public void setTimeZone(String timeZone) {
         this.timeZone = defaultTimeZone(timeZone);
+    }
+
+    public boolean isFailOnNonWorkday() {
+        return failOnNonWorkday;
+    }
+
+    @DataBoundSetter
+    public void setFailOnNonWorkday(boolean failOnNonWorkday) {
+        this.failOnNonWorkday = failOnNonWorkday;
     }
 
     @Override
@@ -67,6 +77,10 @@ public class ChineseWorkdayBuilder extends Builder implements SimpleBuildStep {
         logger.println("Time zone: " + zoneId.getId());
         logger.println("Workday: " + workday);
         logger.println("Holiday: " + holiday);
+
+        if (!workday && failOnNonWorkday) {
+            throw new AbortException(Messages.ChineseWorkdayBuilder_errors_nonWorkdayDetected(resolvedDate.toString()));
+        }
     }
 
     private static String defaultTimeZone(String value) {
