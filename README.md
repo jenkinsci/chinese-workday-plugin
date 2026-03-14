@@ -227,6 +227,18 @@ For compatibility, the plugin still reads optional file-based overrides from
 `$JENKINS_HOME/chinese-workday/calendars/`, and system configuration entries take precedence over
 those files.
 
+## Holiday data maintenance
+
+Bundled holiday data should be updated through a documented review process rather than ad hoc file
+edits.
+
+- source of truth: annual State Council holiday notices
+- bundled resource files should keep a `# Source: ...` comment
+- new bundled years should update both the year file and `index.properties`
+- new or changed bundled data should include automated test updates
+
+See `docs/calendar-maintenance.md` for the maintenance checklist and validation flow.
+
 ## Development
 
 Environment requirements:
