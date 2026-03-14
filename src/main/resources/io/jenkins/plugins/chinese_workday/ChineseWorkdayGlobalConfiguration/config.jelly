@@ -1,0 +1,20 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+    <f:section title="${descriptor.displayName}">
+        <div class="jenkins-form-description">${%Description}</div>
+        <f:repeatable field="calendars" add="${%AddCalendar}">
+            <f:entry title="${%Year}" field="year">
+                <f:textbox checkDependsOn="holidays,makeUpWorkdays" />
+            </f:entry>
+            <f:entry title="${%Holidays}" field="holidays">
+                <f:textarea checkDependsOn="year,makeUpWorkdays" />
+            </f:entry>
+            <f:entry title="${%MakeUpWorkdays}" field="makeUpWorkdays">
+                <f:textarea checkDependsOn="year,holidays" />
+            </f:entry>
+            <f:entry>
+                <f:repeatableDeleteButton />
+            </f:entry>
+        </f:repeatable>
+    </f:section>
+</j:jelly>

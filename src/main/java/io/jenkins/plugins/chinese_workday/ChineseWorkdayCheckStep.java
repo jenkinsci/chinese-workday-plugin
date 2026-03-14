@@ -1,0 +1,85 @@
+package io.jenkins.plugins.chinese_workday;
+
+import java.io.Serial;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Set;
+import org.jenkinsci.plugins.workflow.steps.Step;
+import org.jenkinsci.plugins.workflow.steps.StepContext;
+import org.jenkinsci.plugins.workflow.steps.StepDescriptor;
+import org.jenkinsci.plugins.workflow.steps.StepExecution;
+import org.jenkinsci.plugins.workflow.steps.SynchronousStepExecution;
+import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
+
+public class ChineseWorkdayCheckStep extends Step {
+
+    private final String date;
+    private String timeZone = ChineseWorkdayBuilder.DEFAULT_TIME_ZONE;
+
+    @DataBoundConstructor
+    public ChineseWorkdayCheckStep(String date) {
+        this.date = date;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getTimeZone() {
+        return timeZone;
+    }
+
+    @DataBoundSetter
+    public void setTimeZone(String timeZone) {
+        this.timeZone = ChineseWorkdayResolver.defaultTimeZone(timeZone);
+    }
+
+    @Override
+    public StepExecution start(StepContext context) {
+        return new Execution(context, this);
+    }
+
+    static final class Execution extends SynchronousStepExecution<Boolean> {
+
+        @Serial
+        private static final long serialVersionUID = 1L;
+
+        private final transient ChineseWorkdayCheckStep step;
+
+        Execution(StepContext context, ChineseWorkdayCheckStep step) {
+            super(context);
+            this.step = step;
+        }
+
+        @Override
+        protected Boolean run() throws Exception {
+            ZoneId zoneId = ChineseWorkdayResolver.resolveTimeZone(step.getTimeZone());
+            LocalDate resolvedDate = ChineseWorkdayResolver.resolveDate(step.getDate(), zoneId);
+            try {
+                return new DefaultChineseWorkdayService().isWorkday(resolvedDate, zoneId);
+            } catch (IllegalArgumentException ex) {
+                throw new hudson.AbortException(ex.getMessage());
+            }
+        }
+    }
+
+    @hudson.Extension
+    public static final class DescriptorImpl extends StepDescriptor {
+
+        @Override
+        public String getFunctionName() {
+            return "isWorkday";
+        }
+
+        @Override
+        public String getDisplayName() {
+            return Messages.ChineseWorkdayCheckStep_DescriptorImpl_DisplayName();
+        }
+
+        @Override
+        public Set<? extends Class<?>> getRequiredContext() {
+            return Set.of();
+        }
+    }
+}
