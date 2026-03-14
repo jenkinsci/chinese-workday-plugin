@@ -48,6 +48,7 @@
   - 校验逻辑
   - 文案资源
   - 测试
+- 修改 Java、测试或资源文件后，提交前优先执行 `mvn spotless:apply`，避免遗漏 spotless 格式问题。
 - 若修改系统配置的数据结构，记得同时检查 `configure` 持久化、`help-*.html`、`config.properties` 与配置回显行为。
 - 若引入日期、节假日、调休日等规则，先明确数据来源、更新策略和时区边界。
 - 涉及中国工作日判断时，默认以中国时区和中国法定节假日规则为准，避免直接复用通用周末判断。
@@ -57,6 +58,7 @@
 ## 常用命令
 
 ```bash
+mvn spotless:apply
 mvn test
 mvn package
 mvn hpi:run
