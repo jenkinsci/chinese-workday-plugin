@@ -20,7 +20,7 @@ class DefaultChineseWorkdayServiceTest {
 
         assertFalse(service.isWorkday(LocalDate.of(2027, 10, 2)));
         assertTrue(service.isWorkday(LocalDate.of(2027, 9, 26)));
-        assertEquals(List.of(2025, 2026, 2027), service.supportedYears());
+        assertEquals(List.of(2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027), service.supportedYears());
     }
 
     @Test

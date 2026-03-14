@@ -4,7 +4,7 @@
 
 - 这是一个 Jenkins 插件项目，使用 Maven 构建，产物类型为 `hpi`。
 - 仓库已经从模板骨架切换到 Chinese Workday 插件实现，当前已具备可用的 Freestyle、Pipeline 和系统配置能力。
-- 当前已内置 2025 和 2026 年中国节假日与调休规则；管理员也可以在 `Manage Jenkins -> System -> Chinese Workday` 中补充或覆盖年份配置。
+- 当前已内置 2020 至 2026 年中国节假日与调休规则；管理员也可以在 `Manage Jenkins -> System -> Chinese Workday` 中补充或覆盖年份配置。
 - 仍保留 `$JENKINS_HOME/chinese-workday/calendars/` 文件覆盖机制作为兼容路径，但这不再是首选入口。
 - 优先保持 Jenkins 插件的标准目录结构、构建链路和测试链路可用。
 

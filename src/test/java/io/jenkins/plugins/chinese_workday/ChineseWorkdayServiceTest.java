@@ -15,7 +15,32 @@ class ChineseWorkdayServiceTest {
 
     @Test
     void discoversSupportedYearsFromBundledCalendars() {
-        assertEquals(List.of(2025, 2026), BundledHolidayCalendarLoader.discoverYears());
+        assertEquals(List.of(2020, 2021, 2022, 2023, 2024, 2025, 2026), BundledHolidayCalendarLoader.discoverYears());
+    }
+
+    @Test
+    void returnsNonWorkdayForExtendedSpringFestivalWeekdayIn2020Schedule() {
+        assertFalse(service.isWorkday(LocalDate.of(2020, 1, 31)));
+    }
+
+    @Test
+    void returnsWorkdayForMakeUpSundayIn2021Schedule() {
+        assertTrue(service.isWorkday(LocalDate.of(2021, 2, 7)));
+    }
+
+    @Test
+    void returnsNonWorkdayForOfficialHolidayIn2022Schedule() {
+        assertFalse(service.isWorkday(LocalDate.of(2022, 10, 4)));
+    }
+
+    @Test
+    void returnsWorkdayForMakeUpSundayIn2023Schedule() {
+        assertTrue(service.isWorkday(LocalDate.of(2023, 10, 8)));
+    }
+
+    @Test
+    void returnsWorkdayForMakeUpSundayIn2024Schedule() {
+        assertTrue(service.isWorkday(LocalDate.of(2024, 2, 18)));
     }
 
     @Test
@@ -54,6 +79,6 @@ class ChineseWorkdayServiceTest {
                 assertThrows(IllegalArgumentException.class, () -> service.isWorkday(LocalDate.of(2030, 1, 1)));
 
         assertTrue(exception.getMessage().contains("No bundled Chinese holiday calendar is available for 2030."));
-        assertTrue(exception.getMessage().contains("Supported years: 2025, 2026."));
+        assertTrue(exception.getMessage().contains("Supported years: 2020, 2021, 2022, 2023, 2024, 2025, 2026."));
     }
 }

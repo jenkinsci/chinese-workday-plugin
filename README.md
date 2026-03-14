@@ -10,7 +10,7 @@ The plugin already provides a usable Chinese workday implementation for Jenkins 
 
 Current capabilities include:
 
-- bundled Chinese holiday calendars for `2025` and `2026`
+- bundled Chinese holiday calendars for `2020` through `2026`
 - freestyle build step support
 - Pipeline steps for `isWorkday(...)`, `isHoliday(...)`, and `chineseWorkdaySupportedYears()`
 - Jenkins system configuration for adding or overriding year-specific holiday calendars
@@ -63,7 +63,7 @@ The goal of this plugin is to provide Jenkins features related to Chinese workda
 
 Current implementation notes:
 
-- bundled calendars are currently available for `2025` and `2026`
+- bundled calendars are currently available for `2020` through `2026`
 - bundled calendars are derived from official State Council holiday notices
 - administrators can add future years or override bundled years in `Manage Jenkins -> System -> Chinese Workday`
 - supported years are discovered from bundled calendar resources

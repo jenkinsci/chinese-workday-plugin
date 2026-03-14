@@ -52,7 +52,7 @@ class ChineseWorkdayBuilderTest {
         FreeStyleBuild build = jenkins.assertBuildStatus(Result.FAILURE, project.scheduleBuild2(0));
 
         jenkins.assertLogContains("No Chinese holiday calendar is available for 2030.", build);
-        jenkins.assertLogContains("Supported years: 2025, 2026", build);
+        jenkins.assertLogContains("Supported years: 2020, 2021, 2022, 2023, 2024, 2025, 2026", build);
         jenkins.assertLogContains("Manage Jenkins > System > Chinese Workday", build);
     }
 
@@ -138,7 +138,7 @@ class ChineseWorkdayBuilderTest {
 
         WorkflowRun build = jenkins.assertBuildStatusSuccess(job.scheduleBuild2(0));
 
-        jenkins.assertLogContains("years=2025,2026", build);
+        jenkins.assertLogContains("years=2020,2021,2022,2023,2024,2025,2026", build);
     }
 
     @Test
@@ -154,7 +154,7 @@ class ChineseWorkdayBuilderTest {
 
         WorkflowRun build = jenkins.assertBuildStatusSuccess(job.scheduleBuild2(0));
 
-        jenkins.assertLogContains("years=2025,2026,2027", build);
+        jenkins.assertLogContains("years=2020,2021,2022,2023,2024,2025,2026,2027", build);
     }
 
     @Test
