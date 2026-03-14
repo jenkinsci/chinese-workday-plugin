@@ -69,7 +69,7 @@ Current implementation notes:
 - supported years are discovered from bundled calendar resources
 - supported years return `true` for workdays and `false` for non-workdays
 - unsupported years fail with an error instead of returning an ambiguous result
-- the default time zone is `Asia/Shanghai`
+- all date evaluation uses the fixed time zone `Asia/Shanghai`
 - Pipeline can use `isWorkday(...)` to get a boolean result
 - Pipeline can use `isHoliday(...)` to get a boolean result
 - Pipeline can use `chineseWorkdaySupportedYears()` to query bundled and custom years
@@ -84,15 +84,13 @@ Add the build step `Chinese Workday Check`.
 
 Available fields:
 
-- `Date`: optional, ISO format `yyyy-MM-dd`; blank means "today" in the selected time zone
-- `Time zone`: optional, defaults to `Asia/Shanghai`
+- `Date`: optional, ISO format `yyyy-MM-dd`; blank means "today" in `Asia/Shanghai`
 - `Fail build on non-workday`: optional; if enabled, the build step fails on non-workdays so later
   Freestyle build steps do not run
 
 Example:
 
 - `Date`: `2025-10-03`
-- `Time zone`: `Asia/Shanghai`
 
 Example build log output:
 
@@ -107,8 +105,8 @@ Holiday: true
 ### Pipeline: check result
 
 Use `isWorkday(...)` when you want a boolean result in Pipeline. `date` is optional; when omitted
-it uses the current date in the selected time zone. `timeZone` is also optional; when omitted it
-defaults to `Asia/Shanghai`.
+it uses the current date in `Asia/Shanghai`. The step does not expose a separate time zone
+parameter.
 
 Scripted or Declarative `script` example:
 
@@ -138,8 +136,8 @@ echo "todayIsWorkday=${todayIsWorkday}"
 ### Pipeline: holiday result
 
 Use `isHoliday(...)` when you want a boolean "non-workday" result. `date` is optional; when omitted
-it uses the current date in the selected time zone. `timeZone` is also optional; when omitted it
-defaults to `Asia/Shanghai`.
+it uses the current date in `Asia/Shanghai`. The step does not expose a separate time zone
+parameter.
 
 ```groovy
 def holiday = isHoliday(date: '2025-10-03')
@@ -169,8 +167,7 @@ build log.
 ```groovy
 node {
     chineseWorkday(
-        date: '2025-10-03',
-        timeZone: 'Asia/Shanghai'
+        date: '2025-10-03'
     )
 }
 ```

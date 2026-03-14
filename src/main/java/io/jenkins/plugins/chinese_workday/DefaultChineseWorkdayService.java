@@ -1,7 +1,6 @@
 package io.jenkins.plugins.chinese_workday;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +17,7 @@ final class DefaultChineseWorkdayService implements ChineseWorkdayService {
     }
 
     @Override
-    public boolean isWorkday(LocalDate date, ZoneId zoneId) {
+    public boolean isWorkday(LocalDate date) {
         Map<Integer, HolidaySchedule> schedules = repository.loadSchedules();
         HolidaySchedule schedule = schedules.get(date.getYear());
         if (schedule == null) {

@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
@@ -19,8 +18,8 @@ class DefaultChineseWorkdayServiceTest {
                 makeUpWorkdays=2027-09-26
                 """));
 
-        assertFalse(service.isWorkday(LocalDate.of(2027, 10, 2), ZoneId.of("Asia/Shanghai")));
-        assertTrue(service.isWorkday(LocalDate.of(2027, 9, 26), ZoneId.of("Asia/Shanghai")));
+        assertFalse(service.isWorkday(LocalDate.of(2027, 10, 2)));
+        assertTrue(service.isWorkday(LocalDate.of(2027, 9, 26)));
         assertEquals(List.of(2025, 2026, 2027), service.supportedYears());
     }
 
@@ -31,16 +30,15 @@ class DefaultChineseWorkdayServiceTest {
                 makeUpWorkdays=
                 """));
 
-        assertFalse(service.isWorkday(LocalDate.of(2026, 2, 22), ZoneId.of("Asia/Shanghai")));
+        assertFalse(service.isWorkday(LocalDate.of(2026, 2, 22)));
     }
 
     @Test
     void unsupportedYearMessageIncludesSystemConfigurationHint() {
         DefaultChineseWorkdayService service = service();
 
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> service.isWorkday(LocalDate.of(2030, 1, 1), ZoneId.of("Asia/Shanghai")));
+        IllegalArgumentException exception =
+                assertThrows(IllegalArgumentException.class, () -> service.isWorkday(LocalDate.of(2030, 1, 1)));
 
         assertTrue(exception.getMessage().contains("No Chinese holiday calendar is available for 2030."));
         assertTrue(exception.getMessage().contains("Manage Jenkins > System > Chinese Workday"));

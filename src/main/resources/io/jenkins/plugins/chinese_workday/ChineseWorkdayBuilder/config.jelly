@@ -3,9 +3,6 @@
     <f:entry title="${%Date}" field="date">
         <f:textbox />
     </f:entry>
-    <f:entry title="${%TimeZone}" field="timeZone">
-        <f:textbox default="Asia/Shanghai" />
-    </f:entry>
     <f:entry title="${%FailOnNonWorkday}" field="failOnNonWorkday">
         <f:checkbox />
     </f:entry>

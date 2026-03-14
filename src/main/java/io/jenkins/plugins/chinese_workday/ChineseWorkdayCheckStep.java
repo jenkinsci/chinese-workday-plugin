@@ -2,7 +2,6 @@ package io.jenkins.plugins.chinese_workday;
 
 import java.io.Serial;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Set;
 import org.jenkinsci.plugins.workflow.steps.Step;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
@@ -10,12 +9,10 @@ import org.jenkinsci.plugins.workflow.steps.StepDescriptor;
 import org.jenkinsci.plugins.workflow.steps.StepExecution;
 import org.jenkinsci.plugins.workflow.steps.SynchronousStepExecution;
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.DataBoundSetter;
 
 public class ChineseWorkdayCheckStep extends Step {
 
     private final String date;
-    private String timeZone = ChineseWorkdayBuilder.DEFAULT_TIME_ZONE;
 
     @DataBoundConstructor
     public ChineseWorkdayCheckStep(String date) {
@@ -24,15 +21,6 @@ public class ChineseWorkdayCheckStep extends Step {
 
     public String getDate() {
         return date;
-    }
-
-    public String getTimeZone() {
-        return timeZone;
-    }
-
-    @DataBoundSetter
-    public void setTimeZone(String timeZone) {
-        this.timeZone = ChineseWorkdayResolver.defaultTimeZone(timeZone);
     }
 
     @Override
@@ -54,10 +42,9 @@ public class ChineseWorkdayCheckStep extends Step {
 
         @Override
         protected Boolean run() throws Exception {
-            ZoneId zoneId = ChineseWorkdayResolver.resolveTimeZone(step.getTimeZone());
-            LocalDate resolvedDate = ChineseWorkdayResolver.resolveDate(step.getDate(), zoneId);
+            LocalDate resolvedDate = ChineseWorkdayResolver.resolveDate(step.getDate());
             try {
-                return new DefaultChineseWorkdayService().isWorkday(resolvedDate, zoneId);
+                return new DefaultChineseWorkdayService().isWorkday(resolvedDate);
             } catch (IllegalArgumentException ex) {
                 throw new hudson.AbortException(ex.getMessage());
             }

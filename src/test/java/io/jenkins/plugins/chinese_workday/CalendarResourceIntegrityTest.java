@@ -27,10 +27,8 @@ class CalendarResourceIntegrityTest {
             assertTrue(content.contains("# Source:"), "Missing source comment for " + resourcePath);
 
             Properties properties = new Properties();
-            try (BufferedReader reader =
-                    new BufferedReader(new InputStreamReader(
-                            CalendarResourceIntegrityTest.class.getResourceAsStream(resourcePath),
-                            StandardCharsets.UTF_8))) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    CalendarResourceIntegrityTest.class.getResourceAsStream(resourcePath), StandardCharsets.UTF_8))) {
                 properties.load(reader);
             }
 
@@ -41,11 +39,10 @@ class CalendarResourceIntegrityTest {
 
     private static List<Integer> indexedYears() {
         Properties properties = new Properties();
-        try (BufferedReader reader =
-                new BufferedReader(new InputStreamReader(
-                        CalendarResourceIntegrityTest.class.getResourceAsStream(
-                                "/io/jenkins/plugins/chinese_workday/calendars/index.properties"),
-                        StandardCharsets.UTF_8))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+                CalendarResourceIntegrityTest.class.getResourceAsStream(
+                        "/io/jenkins/plugins/chinese_workday/calendars/index.properties"),
+                StandardCharsets.UTF_8))) {
             properties.load(reader);
         } catch (Exception ex) {
             throw new IllegalStateException("Failed to load bundled calendar index.", ex);
@@ -63,10 +60,8 @@ class CalendarResourceIntegrityTest {
     }
 
     private static String readResource(String resourcePath) throws Exception {
-        try (BufferedReader reader =
-                new BufferedReader(new InputStreamReader(
-                        CalendarResourceIntegrityTest.class.getResourceAsStream(resourcePath),
-                        StandardCharsets.UTF_8))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+                CalendarResourceIntegrityTest.class.getResourceAsStream(resourcePath), StandardCharsets.UTF_8))) {
             return reader.lines().reduce("", (left, right) -> left + right + "\n");
         }
     }

@@ -19,7 +19,6 @@ class ChineseWorkdayBuilderTest {
     void configRoundTrip(JenkinsRule jenkins) throws Exception {
         FreeStyleProject project = jenkins.createFreeStyleProject();
         ChineseWorkdayBuilder builder = new ChineseWorkdayBuilder("2026-01-28");
-        builder.setTimeZone("Asia/Shanghai");
         builder.setFailOnNonWorkday(true);
         project.getBuildersList().add(builder);
 
@@ -34,7 +33,6 @@ class ChineseWorkdayBuilderTest {
     void freestyleBuildLogsPlaceholderResult(JenkinsRule jenkins) throws Exception {
         FreeStyleProject project = jenkins.createFreeStyleProject();
         ChineseWorkdayBuilder builder = new ChineseWorkdayBuilder("2025-01-26");
-        builder.setTimeZone("Asia/Shanghai");
         project.getBuildersList().add(builder);
 
         FreeStyleBuild build = jenkins.buildAndAssertSuccess(project);
@@ -62,7 +60,6 @@ class ChineseWorkdayBuilderTest {
     void freestyleBuildFailsOnNonWorkdayWhenConfigured(JenkinsRule jenkins) throws Exception {
         FreeStyleProject project = jenkins.createFreeStyleProject();
         ChineseWorkdayBuilder builder = new ChineseWorkdayBuilder("2025-10-03");
-        builder.setTimeZone("Asia/Shanghai");
         builder.setFailOnNonWorkday(true);
         project.getBuildersList().add(builder);
 
@@ -79,8 +76,7 @@ class ChineseWorkdayBuilderTest {
         jenkins.createOnlineSlave(Label.get(agentLabel));
 
         WorkflowJob job = jenkins.createProject(WorkflowJob.class, "test-scripted-pipeline");
-        String pipelineScript =
-                "node('" + agentLabel + "') { chineseWorkday date: '2025-10-03', timeZone: 'Asia/Shanghai' }";
+        String pipelineScript = "node('" + agentLabel + "') { chineseWorkday date: '2025-10-03' }";
         job.setDefinition(new CpsFlowDefinition(pipelineScript, true));
 
         WorkflowRun build = jenkins.assertBuildStatusSuccess(job.scheduleBuild2(0));
@@ -93,7 +89,7 @@ class ChineseWorkdayBuilderTest {
     void isWorkdayPipelineStepReturnsBooleanResult(JenkinsRule jenkins) throws Exception {
         WorkflowJob job = jenkins.createProject(WorkflowJob.class, "test-pipeline-step");
         String pipelineScript = """
-                def result = isWorkday date: '2025-10-03', timeZone: 'Asia/Shanghai'
+                def result = isWorkday date: '2025-10-03'
                 echo "workday=${result}"
                 """;
         job.setDefinition(new CpsFlowDefinition(pipelineScript, true));
@@ -107,7 +103,7 @@ class ChineseWorkdayBuilderTest {
     void isHolidayPipelineStepReturnsBooleanResult(JenkinsRule jenkins) throws Exception {
         WorkflowJob job = jenkins.createProject(WorkflowJob.class, "test-holiday-pipeline-step");
         String pipelineScript = """
-                def result = isHoliday date: '2025-10-03', timeZone: 'Asia/Shanghai'
+                def result = isHoliday date: '2025-10-03'
                 echo "holiday=${result}"
                 """;
         job.setDefinition(new CpsFlowDefinition(pipelineScript, true));
@@ -167,8 +163,8 @@ class ChineseWorkdayBuilderTest {
 
         WorkflowJob job = jenkins.createProject(WorkflowJob.class, "test-configured-year-step");
         String pipelineScript = """
-                echo "workday=${isWorkday(date: '2027-10-02', timeZone: 'Asia/Shanghai')}"
-                echo "makeUp=${isWorkday(date: '2027-09-26', timeZone: 'Asia/Shanghai')}"
+                echo "workday=${isWorkday(date: '2027-10-02')}"
+                echo "makeUp=${isWorkday(date: '2027-09-26')}"
                 """;
         job.setDefinition(new CpsFlowDefinition(pipelineScript, true));
 

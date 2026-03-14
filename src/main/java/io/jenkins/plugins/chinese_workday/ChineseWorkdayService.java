@@ -1,13 +1,12 @@
 package io.jenkins.plugins.chinese_workday;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 
 public interface ChineseWorkdayService {
 
-    boolean isWorkday(LocalDate date, ZoneId zoneId);
+    boolean isWorkday(LocalDate date);
 
-    default boolean isHoliday(LocalDate date, ZoneId zoneId) {
-        return !isWorkday(date, zoneId);
+    default boolean isHoliday(LocalDate date) {
+        return !isWorkday(date);
     }
 }

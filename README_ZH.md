@@ -68,7 +68,7 @@ mvn hpi:run
 - 支持年份会从内置日历资源中自动发现
 - 对于支持的年份，工作日返回 `true`，非工作日返回 `false`
 - 对于不支持的年份，插件会直接报错，而不是返回含糊结果
-- 默认时区为 `Asia/Shanghai`
+- 所有日期判断都固定使用 `Asia/Shanghai` 时区
 - 在 Pipeline 中可以使用 `isWorkday(...)` 获取布尔结果
 - 在 Pipeline 中可以使用 `isHoliday(...)` 获取布尔结果
 - 在 Pipeline 中可以使用 `chineseWorkdaySupportedYears()` 查询内置和自定义年份
@@ -83,14 +83,12 @@ mvn hpi:run
 
 可用字段：
 
-- `Date`：可选，使用 ISO 格式 `yyyy-MM-dd`；留空表示使用所选时区下的“今天”
-- `Time zone`：可选，默认值为 `Asia/Shanghai`
+- `Date`：可选，使用 ISO 格式 `yyyy-MM-dd`；留空表示使用 `Asia/Shanghai` 下的“今天”
 - `Fail build on non-workday`：可选；启用后，如果判断结果是非工作日，则当前构建步骤会失败，后续 Freestyle 构建步骤不会继续执行
 
 示例：
 
 - `Date`：`2025-10-03`
-- `Time zone`：`Asia/Shanghai`
 
 构建日志示例输出：
 
@@ -104,7 +102,7 @@ Holiday: true
 
 ### Pipeline：判断是否为工作日
 
-当你需要在 Pipeline 中获取布尔值结果时，使用 `isWorkday(...)`。`date` 为可选项；省略时会使用所选时区下的当前日期。`timeZone` 也为可选项；省略时默认使用 `Asia/Shanghai`。
+当你需要在 Pipeline 中获取布尔值结果时，使用 `isWorkday(...)`。`date` 为可选项；省略时会使用 `Asia/Shanghai` 下的当前日期。该步骤不再单独暴露时区参数。
 
 Scripted Pipeline 或 Declarative Pipeline 的 `script` 示例：
 
@@ -133,7 +131,7 @@ echo "todayIsWorkday=${todayIsWorkday}"
 
 ### Pipeline：判断是否为节假日
 
-当你希望在 Pipeline 中获取“是否为非工作日”的布尔结果时，使用 `isHoliday(...)`。`date` 为可选项；省略时会使用所选时区下的当前日期。`timeZone` 也为可选项；省略时默认使用 `Asia/Shanghai`。
+当你希望在 Pipeline 中获取“是否为非工作日”的布尔结果时，使用 `isHoliday(...)`。`date` 为可选项；省略时会使用 `Asia/Shanghai` 下的当前日期。该步骤不再单独暴露时区参数。
 
 ```groovy
 def holiday = isHoliday(date: '2025-10-03')
@@ -162,8 +160,7 @@ echo "supportedYears=${years.join(',')}"
 ```groovy
 node {
     chineseWorkday(
-        date: '2025-10-03',
-        timeZone: 'Asia/Shanghai'
+        date: '2025-10-03'
     )
 }
 ```
