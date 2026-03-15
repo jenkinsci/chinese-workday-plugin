@@ -236,6 +236,36 @@ edits.
 
 See `docs/calendar-maintenance.md` for the maintenance checklist and validation flow.
 
+## Code structure
+
+The Java code is organized by responsibility so it is easier to trace the main flow from Jenkins
+entry points to holiday data loading and final date evaluation.
+
+- `src/main/java/io/jenkins/plugins/chinese_workday/entry/`: Jenkins entry points for Freestyle and
+  Pipeline usage
+- `src/main/java/io/jenkins/plugins/chinese_workday/config/`: Jenkins global configuration entry
+  points
+- `src/main/java/io/jenkins/plugins/chinese_workday/model/`: shared data models such as configured
+  calendars and resolved holiday schedules
+- `src/main/java/io/jenkins/plugins/chinese_workday/parser/`: parsing and validation of holiday
+  calendar properties and date ranges
+- `src/main/java/io/jenkins/plugins/chinese_workday/repository/`: loading and merging bundled,
+  external, and system-configured calendars
+- `src/main/java/io/jenkins/plugins/chinese_workday/service/`: workday decision logic and service
+  orchestration
+- `src/main/java/io/jenkins/plugins/chinese_workday/support/`: shared helpers such as date
+  resolution in `Asia/Shanghai`
+
+The main runtime flow is:
+
+1. Jenkins calls an entry class under `entry/`
+2. The entry class resolves the target date with `ChineseWorkdayResolver`
+3. `DefaultChineseWorkdayService` asks `ChineseWorkdayCalendarRepository` for the effective
+   calendars
+4. The repository merges data in this order: bundled resources, external files, then Jenkins system
+   configuration
+5. `ChineseWorkdayScheduleEvaluator` applies make-up workdays, holidays, and weekend fallback rules
+
 ## Development
 
 Environment requirements:
