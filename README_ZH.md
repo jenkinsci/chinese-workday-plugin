@@ -51,29 +51,45 @@ mvn package
 mvn hpi:run
 ```
 
+## 快速开始
+
+Freestyle 构建步骤示例：
+
+```text
+Chinese Workday Check
+Date: 2025-10-03
+Fail build on non-workday: enabled
+```
+
+Pipeline 布尔判断示例：
+
+```groovy
+def workday = isWorkday(date: '2025-10-03')
+echo "workday=${workday}"
+```
+
 ## 规划范围
 
-本插件的目标是为 Jenkins 提供与中国工作日规则相关的能力，例如：
-
-- 判断某一天是否为工作日
-- 处理法定节假日
-- 处理调休工作日
-- 支持在 Jenkins 任务和 Pipeline 中使用
+本插件的目标是为 Jenkins 提供围绕中国工作日规则的能力，包括任务、Pipeline 以及管理员可维护的年份覆盖配置。
 
 当前实现说明：
 
 - 当前内置年份为 `2020` 至 `2026`
 - 内置日历数据来源于国务院节假日通知
 - 管理员可以在 `Manage Jenkins -> System -> Chinese Workday` 中新增未来年份，或覆盖内置年份
-- 支持年份会从内置日历资源中自动发现
-- 对于支持的年份，工作日返回 `true`，非工作日返回 `false`
+- `chineseWorkdaySupportedYears()` 会返回当前可用的内置年份和自定义年份
 - 对于不支持的年份，插件会直接报错，而不是返回含糊结果
 - 所有日期判断都固定使用 `Asia/Shanghai` 时区
-- 在 Pipeline 中可以使用 `isWorkday(...)` 获取布尔结果
-- 在 Pipeline 中可以使用 `isHoliday(...)` 获取布尔结果
-- 在 Pipeline 中可以使用 `chineseWorkdaySupportedYears()` 查询内置和自定义年份
 
 具体功能范围后续仍会继续完善。
+
+## 行为摘要
+
+- 默认时区：`Asia/Shanghai`
+- 数据优先级：内置资源 < 外部文件 < Jenkins 系统配置
+- `isWorkday(...)` 和 `isHoliday(...)` 返回布尔值
+- `chineseWorkday(...)` 会把可读结果输出到构建日志
+- 对于不支持的年份，插件会明确失败，而不会静默回退到仅按周末判断
 
 ## 使用方式
 
@@ -215,45 +231,39 @@ Make-up workdays:
 出于兼容性考虑，插件仍会读取可选的文件覆盖目录
 `$JENKINS_HOME/chinese-workday/calendars/`，但系统配置中的内容优先级高于这些文件。
 
+## 常见问题
+
+### 为什么未来年份会失败？
+
+如果某个年份（例如 `2027`）尚未内置，且你也没有配置覆盖数据，插件会显式失败，而不是猜测规则。此时可以先在
+`Manage Jenkins -> System -> Chinese Workday` 中添加临时年份配置。
+
+### 为什么周末也可能返回工作日？
+
+因为中国的调休工作日可能落在周末。这些日期会优先于普通周末规则进行判断。
+
+### 为什么系统配置会覆盖内置数据？
+
+这是有意设计的，实际生效优先级为：
+
+```text
+内置资源 < 外部文件 < 系统配置
+```
+
+这样管理员无需重新构建插件，就可以修正或扩展某一年的数据。
+
 ## 节假日数据维护
 
-内置节假日数据应通过明确的维护流程更新，而不是临时直接修改文件。
-
-- 权威来源：国务院办公厅年度节假日通知
-- 每个内置年份文件应保留 `# Source: ...` 注释
-- 新增内置年份时，同时更新年份文件和 `index.properties`
-- 修改内置数据时，应同步补充或更新自动化测试
-
-具体维护清单与校验流程见 `docs/calendar-maintenance.md`。
+内置节假日数据应通过明确的维护流程更新，而不是临时直接修改文件。关于权威来源、年度更新清单和校验流程，请参考
+`docs/calendar-maintenance.md`。
 
 ## 开发
 
-环境要求：
+关于开发环境、代码结构和本地开发流程，请参考：
 
-- JDK `17+`
-- Maven `3.9.6+`
-
-这些约束来自本仓库所使用的 Jenkins Plugin Parent POM。
-
-常用命令：
-
-```bash
-mvn test
-mvn package
-mvn hpi:run
-```
-
-说明：
-
-- `mvn test`：运行 Jenkins 插件测试
-- `mvn package`：构建插件产物
-- `mvn hpi:run`：启动一个本地 Jenkins 实例，便于手动验证
-
-## 仓库说明
-
-- `src/main/java/`：插件实现代码
-- `src/main/resources/`：Jelly 页面、帮助文档和国际化资源
-- `src/test/java/`：自动化测试
+- `docs/development.md`
+- `docs/architecture.md`
+- `docs/calendar-maintenance.md`
 
 ## 贡献
 

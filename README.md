@@ -52,29 +52,46 @@ For local development, you can also run a test Jenkins with the plugin preloaded
 mvn hpi:run
 ```
 
+## Quick start
+
+Freestyle build step:
+
+```text
+Chinese Workday Check
+Date: 2025-10-03
+Fail build on non-workday: enabled
+```
+
+Pipeline boolean check:
+
+```groovy
+def workday = isWorkday(date: '2025-10-03')
+echo "workday=${workday}"
+```
+
 ## Planned scope
 
-The goal of this plugin is to provide Jenkins features related to Chinese workday rules, such as:
-
-- determining whether a date is a workday
-- handling official holidays
-- handling adjusted working days
-- supporting usage in Jenkins jobs and pipelines
+The goal of this plugin is to provide Jenkins features around Chinese workday rules for jobs,
+Pipelines, and administrator-managed calendar overrides.
 
 Current implementation notes:
 
 - bundled calendars are currently available for `2020` through `2026`
 - bundled calendars are derived from official State Council holiday notices
 - administrators can add future years or override bundled years in `Manage Jenkins -> System -> Chinese Workday`
-- supported years are discovered from bundled calendar resources
-- supported years return `true` for workdays and `false` for non-workdays
+- `chineseWorkdaySupportedYears()` returns bundled and custom years that are currently available
 - unsupported years fail with an error instead of returning an ambiguous result
 - all date evaluation uses the fixed time zone `Asia/Shanghai`
-- Pipeline can use `isWorkday(...)` to get a boolean result
-- Pipeline can use `isHoliday(...)` to get a boolean result
-- Pipeline can use `chineseWorkdaySupportedYears()` to query bundled and custom years
 
 The exact feature set is still being refined.
+
+## Behavior summary
+
+- default time zone: `Asia/Shanghai`
+- data precedence: bundled resources < external files < Jenkins system configuration
+- `isWorkday(...)` and `isHoliday(...)` return booleans
+- `chineseWorkday(...)` writes a readable result to the build log
+- unsupported years fail explicitly instead of silently falling back to weekend-only logic
 
 ## Usage
 
@@ -224,46 +241,42 @@ For compatibility, the plugin still reads optional file-based overrides from
 `$JENKINS_HOME/chinese-workday/calendars/`, and system configuration entries take precedence over
 those files.
 
+## Troubleshooting
+
+### Why does a future year fail?
+
+If a year such as `2027` is not bundled yet and you have not configured an override, the plugin
+fails explicitly instead of guessing. In that case, add a temporary calendar under
+`Manage Jenkins -> System -> Chinese Workday`.
+
+### Why can a weekend still be a workday?
+
+Chinese make-up workdays can fall on weekends. Those dates are checked before normal weekend
+fallback rules.
+
+### Why does Jenkins system configuration override bundled data?
+
+This is intentional. The effective precedence is:
+
+```text
+bundled < external file < system config
+```
+
+This lets administrators correct or extend data without rebuilding the plugin.
+
 ## Holiday data maintenance
 
 Bundled holiday data should be updated through a documented review process rather than ad hoc file
-edits.
-
-- source of truth: annual State Council holiday notices
-- bundled resource files should keep a `# Source: ...` comment
-- new bundled years should update both the year file and `index.properties`
-- new or changed bundled data should include automated test updates
-
-See `docs/calendar-maintenance.md` for the maintenance checklist and validation flow.
+edits. For the source policy, yearly update checklist, and validation flow, see
+`docs/calendar-maintenance.md`.
 
 ## Development
 
-Environment requirements:
+For development notes, code structure, and local workflow details, see:
 
-- JDK `17+`
-- Maven `3.9.6+`
-
-These constraints come from the Jenkins plugin parent pom used by this repository.
-
-Common commands:
-
-```bash
-mvn test
-mvn package
-mvn hpi:run
-```
-
-Notes:
-
-- `mvn test` runs Jenkins plugin tests
-- `mvn package` builds the plugin artifact
-- `mvn hpi:run` starts a local Jenkins instance for manual testing
-
-## Repository notes
-
-- `src/main/java/` contains plugin implementation code
-- `src/main/resources/` contains Jelly views, help files, and localization resources
-- `src/test/java/` contains automated tests
+- `docs/development.md`
+- `docs/architecture.md`
+- `docs/calendar-maintenance.md`
 
 ## Contributing
 

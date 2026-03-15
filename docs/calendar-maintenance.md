@@ -11,6 +11,7 @@ This document describes how to add or update bundled Chinese holiday calendars.
 - If an official page changes location, keep the final canonical source link in the calendar file
 - Temporary Jenkins-side overrides may be configured in `Manage Jenkins -> System -> Chinese Workday`, but bundled data in this repository should still be updated through code review
 
+
 - 首选权威来源：国务院办公厅年度节假日通知
 - 首选发布渠道：国务院或其他政府官网页面
 - 如果官方页面地址发生变化，应在日历文件中保留最终可访问的规范来源链接
@@ -30,6 +31,7 @@ When adding a new bundled year such as `2027`:
 6. Add or update automated tests that cover representative holidays and make-up workdays
 7. Run local validation commands
 8. Include the source link and validation result in the pull request description
+
 
 1. 找到该年度的官方节假日通知
 2. 根据通知确认全部放假区间和调休上班日期
@@ -68,6 +70,7 @@ Rules:
 - a date cannot appear in both `holidays` and `makeUpWorkdays`
 - keep entries readable; multi-line values are preferred for bundled data files
 
+
 - 日期使用 ISO 格式 `yyyy-MM-dd`
 - 日期区间使用 `..`
 - `2027.properties` 中的所有日期都必须属于 `2027` 年
@@ -93,6 +96,7 @@ What to verify:
 - each bundled file parses successfully
 - each bundled file contains a recorded source comment
 - representative service tests still pass for existing years
+
 
 - 内置资源文件与 `index.properties` 保持一致
 - 每个内置年份文件都能被成功解析
