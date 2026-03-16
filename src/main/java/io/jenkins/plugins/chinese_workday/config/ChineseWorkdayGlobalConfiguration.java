@@ -61,7 +61,7 @@ public class ChineseWorkdayGlobalConfiguration extends GlobalConfiguration {
             @QueryParameter String value,
             @RelativePath("..") @QueryParameter String holidays,
             @RelativePath("..") @QueryParameter String makeUpWorkdays) {
-        Jenkins.get().checkPermission(Jenkins.ADMINISTER);
+        Jenkins.get().checkPermission(Jenkins.MANAGE);
         return validateCalendarEntry(value, holidays, makeUpWorkdays);
     }
 
@@ -70,7 +70,7 @@ public class ChineseWorkdayGlobalConfiguration extends GlobalConfiguration {
             @QueryParameter String value,
             @RelativePath("..") @QueryParameter String year,
             @RelativePath("..") @QueryParameter String makeUpWorkdays) {
-        Jenkins.get().checkPermission(Jenkins.ADMINISTER);
+        Jenkins.get().checkPermission(Jenkins.MANAGE);
         return validateCalendarEntry(year, value, makeUpWorkdays);
     }
 
@@ -79,7 +79,7 @@ public class ChineseWorkdayGlobalConfiguration extends GlobalConfiguration {
             @QueryParameter String value,
             @RelativePath("..") @QueryParameter String year,
             @RelativePath("..") @QueryParameter String holidays) {
-        Jenkins.get().checkPermission(Jenkins.ADMINISTER);
+        Jenkins.get().checkPermission(Jenkins.MANAGE);
         return validateCalendarEntry(year, holidays, value);
     }
 

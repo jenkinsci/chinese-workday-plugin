@@ -87,7 +87,7 @@ public class ChineseWorkdayBuilder extends Builder implements SimpleBuildStep {
             if (item != null) {
                 item.checkPermission(Item.CONFIGURE);
             } else {
-                Jenkins.get().checkPermission(Jenkins.ADMINISTER);
+                Jenkins.get().checkPermission(Jenkins.MANAGE);
             }
             String trimmedValue = Util.fixEmptyAndTrim(value);
             if (trimmedValue == null) {
