@@ -7,6 +7,7 @@ import hudson.FilePath;
 import hudson.Launcher;
 import hudson.Util;
 import hudson.model.AbstractProject;
+import hudson.model.Item;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
@@ -18,8 +19,10 @@ import io.jenkins.plugins.chinese_workday.support.ChineseWorkdayResolver;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.time.LocalDate;
+import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildStep;
 import org.jenkinsci.Symbol;
+import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
@@ -76,7 +79,12 @@ public class ChineseWorkdayBuilder extends Builder implements SimpleBuildStep {
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
 
-        public FormValidation doCheckDate(@QueryParameter String value) {
+        public FormValidation doCheckDate(@AncestorInPath Item item, @QueryParameter String value) {
+            if (item != null) {
+                item.checkPermission(Item.CONFIGURE);
+            } else {
+                Jenkins.get().checkPermission(Jenkins.ADMINISTER);
+            }
             String trimmedValue = Util.fixEmptyAndTrim(value);
             if (trimmedValue == null) {
                 return FormValidation.warning(Messages.ChineseWorkdayBuilder_DescriptorImpl_warnings_blankDate());
