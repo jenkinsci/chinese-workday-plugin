@@ -3,8 +3,6 @@ package io.jenkins.plugins.chinese_workday.entry.freestyle;
 import hudson.AbortException;
 import hudson.EnvVars;
 import hudson.Extension;
-import hudson.FilePath;
-import hudson.Launcher;
 import hudson.Util;
 import hudson.model.AbstractProject;
 import hudson.model.Item;
@@ -52,8 +50,12 @@ public class ChineseWorkdayBuilder extends Builder implements SimpleBuildStep {
     }
 
     @Override
-    public void perform(Run<?, ?> run, FilePath workspace, EnvVars env, Launcher launcher, TaskListener listener)
-            throws InterruptedException, IOException {
+    public boolean requiresWorkspace() {
+        return false;
+    }
+
+    @Override
+    public void perform(Run<?, ?> run, EnvVars env, TaskListener listener) throws InterruptedException, IOException {
         LocalDate resolvedDate = ChineseWorkdayResolver.resolveDate(date);
         DefaultChineseWorkdayService service = new DefaultChineseWorkdayService();
         boolean workday;
