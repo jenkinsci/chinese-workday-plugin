@@ -59,7 +59,7 @@ public class ChineseWorkdayCheckStep extends Step {
 
         @Override
         public String getFunctionName() {
-            return "isWorkday";
+            return "isChineseWorkday";
         }
 
         @Override

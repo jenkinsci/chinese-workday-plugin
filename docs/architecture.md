@@ -69,8 +69,8 @@ Base package: `src/main/java/io/jenkins/plugins/chinese_workday/`
 The plugin currently exposes these main entry points:
 
 - `entry/freestyle/ChineseWorkdayBuilder`: Freestyle build step
-- `entry/pipeline/ChineseWorkdayCheckStep`: `isWorkday(...)`
-- `entry/pipeline/ChineseHolidayCheckStep`: `isHoliday(...)`
+- `entry/pipeline/ChineseWorkdayCheckStep`: `isChineseWorkday(...)`
+- `entry/pipeline/ChineseHolidayCheckStep`: `isChineseHoliday(...)`
 - `entry/pipeline/ChineseWorkdaySupportedYearsStep`: `chineseWorkdaySupportedYears()`
 - `config/ChineseWorkdayGlobalConfiguration`: system configuration UI
 
@@ -187,7 +187,7 @@ This is intentional:
 
 ## Representative request flow
 
-Example: `isWorkday(date: '2025-10-03')`
+Example: `isChineseWorkday(date: '2025-10-03')`
 
 1. Pipeline calls `ChineseWorkdayCheckStep`
 2. the step resolves the string date to `LocalDate`

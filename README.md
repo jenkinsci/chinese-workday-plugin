@@ -12,7 +12,7 @@ Current capabilities include:
 
 - bundled Chinese holiday calendars for `2020` through `2026`
 - freestyle build step support
-- Pipeline steps for `isWorkday(...)`, `isHoliday(...)`, and `chineseWorkdaySupportedYears()`
+- Pipeline steps for `isChineseWorkday(...)`, `isChineseHoliday(...)`, and `chineseWorkdaySupportedYears()`
 - Jenkins system configuration for adding or overriding year-specific holiday calendars
 
 The feature set is still intentionally focused, and more years plus related integrations will be
@@ -65,7 +65,7 @@ Fail build on non-workday: enabled
 Pipeline boolean check:
 
 ```groovy
-def workday = isWorkday(date: '2025-10-03')
+def workday = isChineseWorkday(date: '2025-10-03')
 echo "workday=${workday}"
 ```
 
@@ -89,7 +89,7 @@ The exact feature set is still being refined.
 
 - default time zone: `Asia/Shanghai`
 - data precedence: bundled resources < external files < Jenkins system configuration
-- `isWorkday(...)` and `isHoliday(...)` return booleans
+- `isChineseWorkday(...)` and `isChineseHoliday(...)` return booleans
 - `chineseWorkday(...)` writes a readable result to the build log
 - unsupported years fail explicitly instead of silently falling back to weekend-only logic
 
@@ -121,14 +121,14 @@ Holiday: true
 
 ### Pipeline: check result
 
-Use `isWorkday(...)` when you want a boolean result in Pipeline. `date` is optional; when omitted
+Use `isChineseWorkday(...)` when you want a boolean result in Pipeline. `date` is optional; when omitted
 it uses the current date in `Asia/Shanghai`. The step does not expose a separate time zone
 parameter.
 
 Scripted or Declarative `script` example:
 
 ```groovy
-def result = isWorkday(date: '2025-10-03')
+def result = isChineseWorkday(date: '2025-10-03')
 
 echo "workday=${result}"
 
@@ -146,18 +146,18 @@ Return value semantics:
 Example using the default date:
 
 ```groovy
-def todayIsWorkday = isWorkday()
+def todayIsWorkday = isChineseWorkday()
 echo "todayIsWorkday=${todayIsWorkday}"
 ```
 
 ### Pipeline: holiday result
 
-Use `isHoliday(...)` when you want a boolean "non-workday" result. `date` is optional; when omitted
+Use `isChineseHoliday(...)` when you want a boolean "non-workday" result. `date` is optional; when omitted
 it uses the current date in `Asia/Shanghai`. The step does not expose a separate time zone
 parameter.
 
 ```groovy
-def holiday = isHoliday(date: '2025-10-03')
+def holiday = isChineseHoliday(date: '2025-10-03')
 echo "holiday=${holiday}"
 ```
 

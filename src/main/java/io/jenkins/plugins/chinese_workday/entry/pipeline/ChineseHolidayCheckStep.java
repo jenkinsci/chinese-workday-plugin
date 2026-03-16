@@ -61,7 +61,7 @@ public class ChineseHolidayCheckStep extends Step {
 
         @Override
         public String getFunctionName() {
-            return "isHoliday";
+            return "isChineseHoliday";
         }
 
         @Override

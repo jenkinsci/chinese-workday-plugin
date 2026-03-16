@@ -84,10 +84,10 @@ class ChineseWorkdayBuilderTest {
     }
 
     @Test
-    void isWorkdayPipelineStepReturnsBooleanResult(JenkinsRule jenkins) throws Exception {
+    void isChineseWorkdayPipelineStepReturnsBooleanResult(JenkinsRule jenkins) throws Exception {
         WorkflowJob job = jenkins.createProject(WorkflowJob.class, "test-pipeline-step");
         String pipelineScript = """
-                def result = isWorkday date: '2025-10-03'
+                def result = isChineseWorkday date: '2025-10-03'
                 echo "workday=${result}"
                 """;
         job.setDefinition(new CpsFlowDefinition(pipelineScript, true));
@@ -98,10 +98,10 @@ class ChineseWorkdayBuilderTest {
     }
 
     @Test
-    void isHolidayPipelineStepReturnsBooleanResult(JenkinsRule jenkins) throws Exception {
+    void isChineseHolidayPipelineStepReturnsBooleanResult(JenkinsRule jenkins) throws Exception {
         WorkflowJob job = jenkins.createProject(WorkflowJob.class, "test-holiday-pipeline-step");
         String pipelineScript = """
-                def result = isHoliday date: '2025-10-03'
+                def result = isChineseHoliday date: '2025-10-03'
                 echo "holiday=${result}"
                 """;
         job.setDefinition(new CpsFlowDefinition(pipelineScript, true));
@@ -112,10 +112,10 @@ class ChineseWorkdayBuilderTest {
     }
 
     @Test
-    void isWorkdayPipelineStepUsesAsiaShanghaiByDefault(JenkinsRule jenkins) throws Exception {
+    void isChineseWorkdayPipelineStepUsesAsiaShanghaiByDefault(JenkinsRule jenkins) throws Exception {
         WorkflowJob job = jenkins.createProject(WorkflowJob.class, "test-default-timezone-step");
         String pipelineScript = """
-                def result = isWorkday date: '2025-10-03'
+                def result = isChineseWorkday date: '2025-10-03'
                 echo "workday=${result}"
                 """;
         job.setDefinition(new CpsFlowDefinition(pipelineScript, true));
@@ -161,8 +161,8 @@ class ChineseWorkdayBuilderTest {
 
         WorkflowJob job = jenkins.createProject(WorkflowJob.class, "test-configured-year-step");
         String pipelineScript = """
-                echo "workday=${isWorkday(date: '2027-10-02')}"
-                echo "makeUp=${isWorkday(date: '2027-09-26')}"
+                echo "workday=${isChineseWorkday(date: '2027-10-02')}"
+                echo "makeUp=${isChineseWorkday(date: '2027-09-26')}"
                 """;
         job.setDefinition(new CpsFlowDefinition(pipelineScript, true));
 
