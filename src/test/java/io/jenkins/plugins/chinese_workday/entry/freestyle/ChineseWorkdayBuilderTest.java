@@ -2,7 +2,6 @@ package io.jenkins.plugins.chinese_workday.entry.freestyle;
 
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
-import hudson.model.Label;
 import hudson.model.Result;
 import io.jenkins.plugins.chinese_workday.config.ChineseWorkdayGlobalConfiguration;
 import io.jenkins.plugins.chinese_workday.model.ConfiguredHolidayCalendar;
@@ -74,11 +73,8 @@ class ChineseWorkdayBuilderTest {
 
     @Test
     void scriptedPipelineUsesSymbol(JenkinsRule jenkins) throws Exception {
-        String agentLabel = "workday-agent";
-        jenkins.createOnlineSlave(Label.get(agentLabel));
-
         WorkflowJob job = jenkins.createProject(WorkflowJob.class, "test-scripted-pipeline");
-        String pipelineScript = "node('" + agentLabel + "') { chineseWorkday date: '2025-10-03' }";
+        String pipelineScript = "chineseWorkday date: '2025-10-03'";
         job.setDefinition(new CpsFlowDefinition(pipelineScript, true));
 
         WorkflowRun build = jenkins.assertBuildStatusSuccess(job.scheduleBuild2(0));

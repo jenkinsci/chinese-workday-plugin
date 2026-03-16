@@ -182,11 +182,7 @@ The plugin also exposes the builder-style step `chineseWorkday(...)`, which writ
 build log.
 
 ```groovy
-node {
-    chineseWorkday(
-        date: '2025-10-03'
-    )
-}
+chineseWorkday(date: '2025-10-03')
 ```
 
 This form is useful when you want log output instead of a returned boolean.

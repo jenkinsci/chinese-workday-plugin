@@ -174,11 +174,7 @@ echo "supportedYears=${years.join(',')}"
 插件还暴露了一个 Builder 风格的步骤 `chineseWorkday(...)`，会将结果直接输出到构建日志。
 
 ```groovy
-node {
-    chineseWorkday(
-        date: '2025-10-03'
-    )
-}
+chineseWorkday(date: '2025-10-03')
 ```
 
 这种形式适合你希望直接查看日志输出，而不是消费布尔返回值的场景。
