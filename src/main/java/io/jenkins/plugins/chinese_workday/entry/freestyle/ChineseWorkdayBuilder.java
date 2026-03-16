@@ -26,6 +26,7 @@ import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.verb.POST;
 
 public class ChineseWorkdayBuilder extends Builder implements SimpleBuildStep {
 
@@ -79,6 +80,7 @@ public class ChineseWorkdayBuilder extends Builder implements SimpleBuildStep {
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
 
+        @POST
         public FormValidation doCheckDate(@AncestorInPath Item item, @QueryParameter String value) {
             if (item != null) {
                 item.checkPermission(Item.CONFIGURE);

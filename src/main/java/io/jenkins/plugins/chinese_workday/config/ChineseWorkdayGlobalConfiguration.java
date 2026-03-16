@@ -15,6 +15,7 @@ import net.sf.json.JSONObject;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest2;
+import org.kohsuke.stapler.verb.POST;
 
 @Extension
 public class ChineseWorkdayGlobalConfiguration extends GlobalConfiguration {
@@ -55,6 +56,7 @@ public class ChineseWorkdayGlobalConfiguration extends GlobalConfiguration {
         return true;
     }
 
+    @POST
     public FormValidation doCheckYear(
             @QueryParameter String value,
             @RelativePath("..") @QueryParameter String holidays,
@@ -63,6 +65,7 @@ public class ChineseWorkdayGlobalConfiguration extends GlobalConfiguration {
         return validateCalendarEntry(value, holidays, makeUpWorkdays);
     }
 
+    @POST
     public FormValidation doCheckHolidays(
             @QueryParameter String value,
             @RelativePath("..") @QueryParameter String year,
@@ -71,6 +74,7 @@ public class ChineseWorkdayGlobalConfiguration extends GlobalConfiguration {
         return validateCalendarEntry(year, value, makeUpWorkdays);
     }
 
+    @POST
     public FormValidation doCheckMakeUpWorkdays(
             @QueryParameter String value,
             @RelativePath("..") @QueryParameter String year,
