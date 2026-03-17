@@ -1,6 +1,9 @@
 package io.jenkins.plugins.chinese_workday.model;
 
+import hudson.Extension;
 import hudson.Util;
+import hudson.model.Describable;
+import hudson.model.Descriptor;
 import io.jenkins.plugins.chinese_workday.parser.HolidayCalendarParser;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -11,7 +14,7 @@ import java.util.stream.Collectors;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
-public class ConfiguredHolidayCalendar {
+public class ConfiguredHolidayCalendar implements Describable<ConfiguredHolidayCalendar> {
 
     private final String year;
     private String holidays = "";
@@ -194,6 +197,15 @@ public class ConfiguredHolidayCalendar {
             return LocalDate.parse(value);
         } catch (RuntimeException ex) {
             throw new IllegalArgumentException("Invalid date '" + value + "' for " + fieldName + ".", ex);
+        }
+    }
+
+    @Extension
+    public static final class DescriptorImpl extends Descriptor<ConfiguredHolidayCalendar> {
+
+        @Override
+        public String getDisplayName() {
+            return "";
         }
     }
 }
