@@ -2,24 +2,20 @@
 
 [English](README.md)
 
-## 当前状态
+## 概览
 
-本仓库正处于持续开发中。
+该插件为 Jenkins Pipeline、Freestyle 任务以及管理员维护的年份配置提供中国工作日判断能力。
 
-该插件已经为 Jenkins 的 Freestyle 任务和 Pipeline 提供了可用的中国工作日判断能力。
-
-当前已具备的能力包括：
+当前已具备的能力：
 
 - 内置 `2020` 至 `2026` 年中国节假日与调休日历
-- 支持 Freestyle 构建步骤
 - 提供 `isChineseWorkday(...)`、`isChineseHoliday(...)` 和 `chineseWorkdaySupportedYears()` 等 Pipeline 步骤
+- 支持 Freestyle 构建步骤
 - 支持在 Jenkins 系统配置中新增或覆盖指定年份的节假日配置
-
-当前功能范围仍保持聚焦，后续会继续补充更多年份及相关集成能力。
 
 ## 安装
 
-你可以通过以下两种方式安装插件。
+你可以选择以下任一方式安装插件。
 
 ### 方式一：从 Jenkins 插件中心安装
 
@@ -30,6 +26,8 @@
 3. 选中插件并安装
 4. 如果 Jenkins 提示重启，则按提示重启
 
+如果更新中心里还没有该插件，请使用下面的手动安装方式。
+
 ### 方式二：手动上传 `hpi` 安装包
 
 先在本地构建插件：
@@ -38,62 +36,300 @@
 mvn package
 ```
 
-构建完成后，在 Jenkins 中上传 `target/` 目录下生成的 `.hpi` 文件：
+构建完成后，在 Jenkins 中上传 `target/` 目录下生成的 `.hpi` 文件，例如
+`target/chinese-workday.hpi`：
 
 1. 打开 `Manage Jenkins -> Plugins`
 2. 打开 `Advanced settings` 区域
 3. 在 `Deploy Plugin` 中选择生成的 `.hpi` 文件
 4. 上传插件，并在 Jenkins 提示时重启
 
-如果你是在本地开发，也可以直接启动一个预加载该插件的测试 Jenkins：
-
-```bash
-mvn hpi:run
-```
-
 ## 快速开始
 
-Freestyle 构建步骤示例：
-
-```text
-Chinese Workday Check
-Date: 2025-10-03
-Fail build on non-workday: enabled
-```
-
-Pipeline 布尔判断示例：
+仅在中国工作日执行发布 stage：
 
 ```groovy
-def workday = isChineseWorkday(date: '2025-10-03')
-echo "workday=${workday}"
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                echo '构建阶段每天都会执行。'
+            }
+        }
+        stage('Release') {
+            when {
+                expression {
+                    isChineseWorkday()
+                }
+            }
+            steps {
+                echo '仅在中国工作日执行发布。'
+            }
+        }
+    }
+}
 ```
-
-## 规划范围
-
-本插件的目标是为 Jenkins 提供围绕中国工作日规则的能力，包括任务、Pipeline 以及管理员可维护的年份覆盖配置。
-
-当前实现说明：
-
-- 当前内置年份为 `2020` 至 `2026`
-- 内置日历数据来源于国务院节假日通知
-- 管理员可以在 `Manage Jenkins -> System -> Chinese Workday` 中新增未来年份，或覆盖内置年份
-- `chineseWorkdaySupportedYears()` 会返回当前可用的内置年份和自定义年份
-- 对于不支持的年份，插件会直接报错，而不是返回含糊结果
-- 所有日期判断都固定使用 `Asia/Shanghai` 时区
-
-具体功能范围后续仍会继续完善。
 
 ## 行为摘要
 
 - 默认时区：`Asia/Shanghai`
 - 数据优先级：内置资源 < 外部文件 < Jenkins 系统配置
 - `isChineseWorkday(...)` 和 `isChineseHoliday(...)` 返回布尔值
-- `chineseWorkday(...)` 会把可读结果输出到构建日志
 - 对于不支持的年份，插件会明确失败，而不会静默回退到仅按周末判断
 
 ## 使用方式
 
-### Freestyle 任务
+### Pipeline：步骤总览
+
+- `isChineseWorkday(...)`：判断今天或指定日期是否为中国工作日
+- `isChineseHoliday(...)`：判断今天或指定日期是否为中国非工作日
+- `chineseWorkdaySupportedYears()`：查看当前可用的内置年份和自定义年份
+
+### Pipeline：工作日判断
+
+当你需要在 Pipeline 中获取布尔值结果时，使用 `isChineseWorkday(...)`。`date` 为可选项；省略时会使用 `Asia/Shanghai` 下的当前日期。该步骤不再单独暴露时区参数。
+
+默认日期示例：
+
+```groovy
+def todayIsWorkday = isChineseWorkday()
+echo "todayIsWorkday=${todayIsWorkday}"
+
+if (!todayIsWorkday) {
+    echo '今天是中国非工作日，跳过发布动作。'
+}
+```
+
+指定日期示例：
+
+```groovy
+def result = isChineseWorkday(date: '2025-10-03')
+
+echo "workday=${result}"
+
+if (!result) {
+    echo '指定日期是中国非工作日，跳过发布动作。'
+}
+```
+
+返回值语义：
+
+- `true`：该日期是中国工作日
+- `false`：该日期是中国非工作日
+- 不支持的年份：步骤执行失败并报错
+
+### Pipeline：非工作日判断
+
+当你希望在 Pipeline 中获取“是否为非工作日”的布尔结果时，使用 `isChineseHoliday(...)`。`date` 为可选项；省略时会使用 `Asia/Shanghai` 下的当前日期。该步骤不再单独暴露时区参数。
+
+默认日期示例：
+
+```groovy
+if (isChineseHoliday()) {
+    echo '今天是中国节假日或调休日。'
+}
+```
+
+指定日期示例：
+
+```groovy
+def holiday = isChineseHoliday(date: '2025-10-03')
+echo "holiday=${holiday}"
+```
+
+返回值语义：
+
+- `true`：该日期是中国节假日 / 非工作日
+- `false`：该日期是中国工作日
+- 不支持的年份：步骤执行失败并报错
+
+### Pipeline：支持年份
+
+使用 `chineseWorkdaySupportedYears()` 查询当前可用的内置年份和自定义年份。
+
+```groovy
+def years = chineseWorkdaySupportedYears()
+echo "supportedYears=${years.join(',')}"
+```
+
+### Pipeline：常见使用场景
+
+#### 仅在中国工作日执行定时任务
+
+适用于日报生成、数据同步、工作日发版等周期性任务。
+
+```groovy
+pipeline {
+    agent any
+    triggers {
+        cron('H 9 * * *')
+    }
+    stages {
+        stage('Daily Sync') {
+            when {
+                expression {
+                    isChineseWorkday()
+                }
+            }
+            steps {
+                echo '仅在中国工作日执行定时任务。'
+            }
+        }
+    }
+}
+```
+
+#### 先计算一次，再决定后续 stage 是否执行
+
+当多个后续 stage 都依赖同一个工作日判断结果时，这种写法更清晰。
+
+```groovy
+pipeline {
+    agent any
+    stages {
+        stage('Prepare') {
+            steps {
+                script {
+                    env.RUN_RELEASE = isChineseWorkday() ? 'true' : 'false'
+                    echo "runRelease=${env.RUN_RELEASE}"
+                }
+            }
+        }
+        stage('Release') {
+            when {
+                expression {
+                    env.RUN_RELEASE == 'true'
+                }
+            }
+            steps {
+                echo '今天允许执行发布。'
+            }
+        }
+        stage('Notify Skip') {
+            when {
+                expression {
+                    env.RUN_RELEASE != 'true'
+                }
+            }
+            steps {
+                echo '今天是中国非工作日，跳过发布。'
+            }
+        }
+    }
+}
+```
+
+#### 在 Scripted Pipeline 中决定是否进入某个 stage
+
+如果你使用的是 Scripted Pipeline，可以直接控制是否进入某个 stage。
+
+```groovy
+node {
+    stage('Build') {
+        echo '构建阶段每天都会执行。'
+    }
+
+    if (isChineseWorkday()) {
+        stage('Release') {
+            echo '仅在中国工作日执行发布。'
+        }
+    } else {
+        echo '今天是中国非工作日，跳过 Release stage。'
+    }
+}
+```
+
+#### 在中国非工作日尽早结束整个流水线
+
+如果整条流水线都不应该在中国非工作日继续执行，可以一开始就结束。
+
+```groovy
+pipeline {
+    agent any
+    stages {
+        stage('Check Calendar') {
+            steps {
+                script {
+                    if (!isChineseWorkday()) {
+                        currentBuild.description = 'Skipped on a Chinese non-workday'
+                        echo '今天是中国非工作日，提前结束流水线。'
+                        return
+                    }
+                }
+            }
+        }
+        stage('Release') {
+            steps {
+                echo '继续执行发布动作。'
+            }
+        }
+    }
+}
+```
+
+#### 按参数中的业务日期进行判断
+
+如果任务需要校验某个业务日期，而不是总是判断“今天”，可以直接传入 `date` 参数。
+
+```groovy
+pipeline {
+    agent any
+    parameters {
+        string(name: 'TARGET_DATE', defaultValue: '2025-10-03', description: 'yyyy-MM-dd')
+    }
+    stages {
+        stage('Validate Date') {
+            steps {
+                script {
+                    def workday = isChineseWorkday(date: params.TARGET_DATE)
+                    echo "targetDate=${params.TARGET_DATE}, workday=${workday}"
+                }
+            }
+        }
+    }
+}
+```
+
+#### 在中国非工作日走降级或通知分支
+
+如果你不想简单跳过，也可以在中国非工作日走通知、记录或轻量替代流程。
+
+```groovy
+pipeline {
+    agent any
+    stages {
+        stage('Release Decision') {
+            steps {
+                script {
+                    if (isChineseHoliday()) {
+                        echo '今天是中国非工作日，发送通知并跳过发布。'
+                    } else {
+                        echo '今天是中国工作日，继续执行发布动作。'
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+#### 在判断未来日期前，先确认该年份是否已支持
+
+如果任务会检查未来年份，先检查 `chineseWorkdaySupportedYears()` 会更稳妥。
+
+```groovy
+def targetYear = 2027
+def years = chineseWorkdaySupportedYears()
+
+if (!years.contains(targetYear)) {
+    error "Chinese workday calendar for ${targetYear} is not configured yet."
+}
+
+echo "isWorkday=${isChineseWorkday(date: '2027-10-02')}"
+```
+
+### Freestyle：构建步骤
 
 添加构建步骤 `Chinese Workday Check`。
 
@@ -115,69 +351,6 @@ Time zone: Asia/Shanghai
 Workday: false
 Holiday: true
 ```
-
-### Pipeline：判断是否为工作日
-
-当你需要在 Pipeline 中获取布尔值结果时，使用 `isChineseWorkday(...)`。`date` 为可选项；省略时会使用 `Asia/Shanghai` 下的当前日期。该步骤不再单独暴露时区参数。
-
-Scripted Pipeline 或 Declarative Pipeline 的 `script` 示例：
-
-```groovy
-def result = isChineseWorkday(date: '2025-10-03')
-
-echo "workday=${result}"
-
-if (!result) {
-    echo 'Skip release actions on non-workdays.'
-}
-```
-
-返回值语义：
-
-- `true`：该日期是中国工作日
-- `false`：该日期是中国非工作日
-- 不支持的年份：步骤执行失败并报错
-
-使用默认日期的示例：
-
-```groovy
-def todayIsWorkday = isChineseWorkday()
-echo "todayIsWorkday=${todayIsWorkday}"
-```
-
-### Pipeline：判断是否为节假日
-
-当你希望在 Pipeline 中获取“是否为非工作日”的布尔结果时，使用 `isChineseHoliday(...)`。`date` 为可选项；省略时会使用 `Asia/Shanghai` 下的当前日期。该步骤不再单独暴露时区参数。
-
-```groovy
-def holiday = isChineseHoliday(date: '2025-10-03')
-echo "holiday=${holiday}"
-```
-
-返回值语义：
-
-- `true`：该日期是中国节假日 / 非工作日
-- `false`：该日期是中国工作日
-- 不支持的年份：步骤执行失败并报错
-
-### Pipeline：查询支持的年份
-
-使用 `chineseWorkdaySupportedYears()` 查询当前可用的内置年份和自定义年份。
-
-```groovy
-def years = chineseWorkdaySupportedYears()
-echo "supportedYears=${years.join(',')}"
-```
-
-### Pipeline：Builder 风格步骤
-
-插件还暴露了一个 Builder 风格的步骤 `chineseWorkday(...)`，会将结果直接输出到构建日志。
-
-```groovy
-chineseWorkday(date: '2025-10-03')
-```
-
-这种形式适合你希望直接查看日志输出，而不是消费布尔返回值的场景。
 
 ## 系统配置
 
@@ -226,6 +399,21 @@ Make-up workdays:
 
 出于兼容性考虑，插件仍会读取可选的文件覆盖目录
 `$JENKINS_HOME/chinese-workday/calendars/`，但系统配置中的内容优先级高于这些文件。
+
+## 规划范围
+
+本插件的目标是为 Jenkins 提供围绕中国工作日规则的能力，包括任务、Pipeline 以及管理员可维护的年份覆盖配置。
+
+当前实现说明：
+
+- 当前内置年份为 `2020` 至 `2026`
+- 内置日历数据来源于国务院节假日通知
+- 管理员可以在 `Manage Jenkins -> System -> Chinese Workday` 中新增未来年份，或覆盖内置年份
+- `chineseWorkdaySupportedYears()` 会返回当前可用的内置年份和自定义年份
+- 对于不支持的年份，插件会直接报错，而不是返回含糊结果
+- 所有日期判断都固定使用 `Asia/Shanghai` 时区
+
+具体功能范围后续仍会继续完善。
 
 ## 常见问题
 
