@@ -3,13 +3,13 @@
     <f:section title="${descriptor.displayName}">
         <div class="jenkins-form-description">${%Description}</div>
         <f:repeatable field="calendars" add="${%AddCalendar}">
-            <f:entry title="${%Year}" field="year">
+            <f:entry title="${%Year}" field="year" help="/plugin/chinese-workday/help/chinese-workday-global/year.html">
                 <f:textbox checkDependsOn="holidays,makeUpWorkdays" />
             </f:entry>
-            <f:entry title="${%Holidays}" field="holidays">
+            <f:entry title="${%Holidays}" field="holidays" help="/plugin/chinese-workday/help/chinese-workday-global/holidays.html">
                 <f:textarea checkDependsOn="year,makeUpWorkdays" />
             </f:entry>
-            <f:entry title="${%MakeUpWorkdays}" field="makeUpWorkdays">
+            <f:entry title="${%MakeUpWorkdays}" field="makeUpWorkdays" help="/plugin/chinese-workday/help/chinese-workday-global/make-up-workdays.html">
                 <f:textarea checkDependsOn="year,holidays" />
             </f:entry>
             <f:entry>
