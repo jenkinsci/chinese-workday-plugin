@@ -6,6 +6,7 @@ import hudson.Util;
 import io.jenkins.plugins.chinese_workday.Messages;
 import io.jenkins.plugins.chinese_workday.service.DefaultChineseWorkdayService;
 import io.jenkins.plugins.chinese_workday.support.ChineseWorkdayResolver;
+import io.jenkins.plugins.chinese_workday.support.ChineseWorkdayStepSupport;
 import java.io.Serial;
 import java.time.LocalDate;
 import java.util.Set;
@@ -52,11 +53,8 @@ public class ChineseHolidayCheckStep extends Step {
         @Override
         protected Boolean run() throws Exception {
             LocalDate resolvedDate = ChineseWorkdayResolver.resolveDate(step.getDate());
-            try {
-                return new DefaultChineseWorkdayService().isHoliday(resolvedDate);
-            } catch (IllegalArgumentException ex) {
-                throw new AbortException(ex.getMessage());
-            }
+            return ChineseWorkdayStepSupport.abortOnIllegalArgument(
+                    () -> new DefaultChineseWorkdayService().isHoliday(resolvedDate));
         }
     }
 

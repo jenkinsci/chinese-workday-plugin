@@ -14,6 +14,7 @@ import hudson.util.FormValidation;
 import io.jenkins.plugins.chinese_workday.Messages;
 import io.jenkins.plugins.chinese_workday.service.DefaultChineseWorkdayService;
 import io.jenkins.plugins.chinese_workday.support.ChineseWorkdayResolver;
+import io.jenkins.plugins.chinese_workday.support.ChineseWorkdayStepSupport;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.time.LocalDate;
@@ -61,12 +62,7 @@ public class ChineseWorkdayBuilder extends Builder implements SimpleBuildStep {
     public void perform(Run<?, ?> run, EnvVars env, TaskListener listener) throws InterruptedException, IOException {
         LocalDate resolvedDate = ChineseWorkdayResolver.resolveDate(date);
         DefaultChineseWorkdayService service = new DefaultChineseWorkdayService();
-        boolean workday;
-        try {
-            workday = service.isWorkday(resolvedDate);
-        } catch (IllegalArgumentException ex) {
-            throw new AbortException(ex.getMessage());
-        }
+        boolean workday = ChineseWorkdayStepSupport.abortOnIllegalArgument(() -> service.isWorkday(resolvedDate));
         boolean holiday = !workday;
 
         PrintStream logger = listener.getLogger();
