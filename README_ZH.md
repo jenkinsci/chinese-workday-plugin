@@ -75,7 +75,6 @@ pipeline {
 
 - 默认时区：`Asia/Shanghai`
 - 数据优先级：内置资源 < 外部文件 < Jenkins 系统配置
-- `isChineseWorkday(...)` 和 `isChineseHoliday(...)` 返回布尔值
 - 对于不支持的年份，插件会明确失败，而不会静默回退到仅按周末判断
 
 ## 使用方式
@@ -240,80 +239,6 @@ node {
 }
 ```
 
-#### 在中国非工作日尽早结束整个流水线
-
-如果整条流水线都不应该在中国非工作日继续执行，可以一开始就结束。
-
-```groovy
-pipeline {
-    agent any
-    stages {
-        stage('Check Calendar') {
-            steps {
-                script {
-                    if (!isChineseWorkday()) {
-                        currentBuild.description = 'Skipped on a Chinese non-workday'
-                        echo '今天是中国非工作日，提前结束流水线。'
-                        return
-                    }
-                }
-            }
-        }
-        stage('Release') {
-            steps {
-                echo '继续执行发布动作。'
-            }
-        }
-    }
-}
-```
-
-#### 按参数中的业务日期进行判断
-
-如果任务需要校验某个业务日期，而不是总是判断“今天”，可以直接传入 `date` 参数。
-
-```groovy
-pipeline {
-    agent any
-    parameters {
-        string(name: 'TARGET_DATE', defaultValue: '2025-10-03', description: 'yyyy-MM-dd')
-    }
-    stages {
-        stage('Validate Date') {
-            steps {
-                script {
-                    def workday = isChineseWorkday(date: params.TARGET_DATE)
-                    echo "targetDate=${params.TARGET_DATE}, workday=${workday}"
-                }
-            }
-        }
-    }
-}
-```
-
-#### 在中国非工作日走降级或通知分支
-
-如果你不想简单跳过，也可以在中国非工作日走通知、记录或轻量替代流程。
-
-```groovy
-pipeline {
-    agent any
-    stages {
-        stage('Release Decision') {
-            steps {
-                script {
-                    if (isChineseHoliday()) {
-                        echo '今天是中国非工作日，发送通知并跳过发布。'
-                    } else {
-                        echo '今天是中国工作日，继续执行发布动作。'
-                    }
-                }
-            }
-        }
-    }
-}
-```
-
 #### 在判断未来日期前，先确认该年份是否已支持
 
 如果任务会检查未来年份，先检查 `chineseWorkdaySupportedYears()` 会更稳妥。
@@ -399,21 +324,6 @@ Make-up workdays:
 
 出于兼容性考虑，插件仍会读取可选的文件覆盖目录
 `$JENKINS_HOME/chinese-workday/calendars/`，但系统配置中的内容优先级高于这些文件。
-
-## 规划范围
-
-本插件的目标是为 Jenkins 提供围绕中国工作日规则的能力，包括任务、Pipeline 以及管理员可维护的年份覆盖配置。
-
-当前实现说明：
-
-- 当前内置年份为 `2020` 至 `2026`
-- 内置日历数据来源于国务院节假日通知
-- 管理员可以在 `Manage Jenkins -> System -> Chinese Workday` 中新增未来年份，或覆盖内置年份
-- `chineseWorkdaySupportedYears()` 会返回当前可用的内置年份和自定义年份
-- 对于不支持的年份，插件会直接报错，而不是返回含糊结果
-- 所有日期判断都固定使用 `Asia/Shanghai` 时区
-
-具体功能范围后续仍会继续完善。
 
 ## 常见问题
 

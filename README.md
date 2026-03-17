@@ -76,7 +76,6 @@ pipeline {
 
 - default time zone: `Asia/Shanghai`
 - data precedence: bundled resources < external files < Jenkins system configuration
-- `isChineseWorkday(...)` and `isChineseHoliday(...)` return booleans
 - unsupported years fail explicitly instead of silently falling back to weekend-only logic
 
 ## Usage
@@ -245,83 +244,6 @@ node {
 }
 ```
 
-#### End the Pipeline early on a Chinese non-workday
-
-This pattern is useful when the whole Pipeline should stop as soon as the current day is known to
-be a Chinese non-workday.
-
-```groovy
-pipeline {
-    agent any
-    stages {
-        stage('Check Calendar') {
-            steps {
-                script {
-                    if (!isChineseWorkday()) {
-                        currentBuild.description = 'Skipped on a Chinese non-workday'
-                        echo 'Stop the Pipeline early on a Chinese non-workday.'
-                        return
-                    }
-                }
-            }
-        }
-        stage('Release') {
-            steps {
-                echo 'Continue with release actions.'
-            }
-        }
-    }
-}
-```
-
-#### Check a business date from Pipeline parameters
-
-This is useful when the job should validate a requested business date instead of always using
-today.
-
-```groovy
-pipeline {
-    agent any
-    parameters {
-        string(name: 'TARGET_DATE', defaultValue: '2025-10-03', description: 'yyyy-MM-dd')
-    }
-    stages {
-        stage('Validate Date') {
-            steps {
-                script {
-                    def workday = isChineseWorkday(date: params.TARGET_DATE)
-                    echo "targetDate=${params.TARGET_DATE}, workday=${workday}"
-                }
-            }
-        }
-    }
-}
-```
-
-#### Take a fallback path on a Chinese non-workday
-
-This pattern is useful when you want to skip release work but still notify people or run a lighter
-alternative flow.
-
-```groovy
-pipeline {
-    agent any
-    stages {
-        stage('Release Decision') {
-            steps {
-                script {
-                    if (isChineseHoliday()) {
-                        echo 'Today is a Chinese non-workday. Send notifications instead of releasing.'
-                    } else {
-                        echo 'Today is a Chinese workday. Continue release actions.'
-                    }
-                }
-            }
-        }
-    }
-}
-```
-
 #### Check future-year support before using a custom date
 
 This is useful when you run jobs against future schedules that may depend on administrator-provided
@@ -411,22 +333,6 @@ After saving the system configuration, the next build or Pipeline step uses the 
 For compatibility, the plugin still reads optional file-based overrides from
 `$JENKINS_HOME/chinese-workday/calendars/`, and system configuration entries take precedence over
 those files.
-
-## Planned scope
-
-The goal of this plugin is to provide Jenkins features around Chinese workday rules for jobs,
-Pipelines, and administrator-managed calendar overrides.
-
-Current implementation notes:
-
-- bundled calendars are currently available for `2020` through `2026`
-- bundled calendars are derived from official State Council holiday notices
-- administrators can add future years or override bundled years in `Manage Jenkins -> System -> Chinese Workday`
-- `chineseWorkdaySupportedYears()` returns bundled and custom years that are currently available
-- unsupported years fail with an error instead of returning an ambiguous result
-- all date evaluation uses the fixed time zone `Asia/Shanghai`
-
-The exact feature set is still being refined.
 
 ## Troubleshooting
 
