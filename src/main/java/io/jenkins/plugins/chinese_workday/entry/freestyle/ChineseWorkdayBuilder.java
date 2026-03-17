@@ -67,7 +67,7 @@ public class ChineseWorkdayBuilder extends Builder implements SimpleBuildStep {
         } catch (IllegalArgumentException ex) {
             throw new AbortException(ex.getMessage());
         }
-        boolean holiday = service.isHoliday(resolvedDate);
+        boolean holiday = !workday;
 
         PrintStream logger = listener.getLogger();
         logger.println("Chinese Workday check");
