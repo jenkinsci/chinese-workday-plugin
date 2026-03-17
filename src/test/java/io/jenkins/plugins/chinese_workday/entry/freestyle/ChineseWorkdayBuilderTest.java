@@ -19,7 +19,8 @@ class ChineseWorkdayBuilderTest {
     @Test
     void configRoundTrip(JenkinsRule jenkins) throws Exception {
         FreeStyleProject project = jenkins.createFreeStyleProject();
-        ChineseWorkdayBuilder builder = new ChineseWorkdayBuilder("2026-01-28");
+        ChineseWorkdayBuilder builder = new ChineseWorkdayBuilder();
+        builder.setDate("2026-01-28");
         builder.setFailOnNonWorkday(true);
         project.getBuildersList().add(builder);
 
@@ -33,7 +34,8 @@ class ChineseWorkdayBuilderTest {
     @Test
     void freestyleBuildLogsPlaceholderResult(JenkinsRule jenkins) throws Exception {
         FreeStyleProject project = jenkins.createFreeStyleProject();
-        ChineseWorkdayBuilder builder = new ChineseWorkdayBuilder("2025-01-26");
+        ChineseWorkdayBuilder builder = new ChineseWorkdayBuilder();
+        builder.setDate("2025-01-26");
         project.getBuildersList().add(builder);
 
         FreeStyleBuild build = jenkins.buildAndAssertSuccess(project);
@@ -47,7 +49,8 @@ class ChineseWorkdayBuilderTest {
     @Test
     void freestyleBuildFailsForUnsupportedYear(JenkinsRule jenkins) throws Exception {
         FreeStyleProject project = jenkins.createFreeStyleProject();
-        ChineseWorkdayBuilder builder = new ChineseWorkdayBuilder("2030-01-01");
+        ChineseWorkdayBuilder builder = new ChineseWorkdayBuilder();
+        builder.setDate("2030-01-01");
         project.getBuildersList().add(builder);
 
         FreeStyleBuild build = jenkins.assertBuildStatus(Result.FAILURE, project.scheduleBuild2(0));
@@ -60,7 +63,8 @@ class ChineseWorkdayBuilderTest {
     @Test
     void freestyleBuildFailsOnNonWorkdayWhenConfigured(JenkinsRule jenkins) throws Exception {
         FreeStyleProject project = jenkins.createFreeStyleProject();
-        ChineseWorkdayBuilder builder = new ChineseWorkdayBuilder("2025-10-03");
+        ChineseWorkdayBuilder builder = new ChineseWorkdayBuilder();
+        builder.setDate("2025-10-03");
         builder.setFailOnNonWorkday(true);
         project.getBuildersList().add(builder);
 

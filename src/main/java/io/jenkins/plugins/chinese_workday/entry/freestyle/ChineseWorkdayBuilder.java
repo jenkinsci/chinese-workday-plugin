@@ -28,16 +28,19 @@ import org.kohsuke.stapler.verb.POST;
 
 public class ChineseWorkdayBuilder extends Builder implements SimpleBuildStep {
 
-    private final String date;
+    private String date = "";
     private boolean failOnNonWorkday;
 
     @DataBoundConstructor
-    public ChineseWorkdayBuilder(String date) {
-        this.date = Util.fixNull(date).trim();
-    }
+    public ChineseWorkdayBuilder() {}
 
     public String getDate() {
         return date;
+    }
+
+    @DataBoundSetter
+    public void setDate(String date) {
+        this.date = Util.fixNull(date).trim();
     }
 
     public boolean isFailOnNonWorkday() {

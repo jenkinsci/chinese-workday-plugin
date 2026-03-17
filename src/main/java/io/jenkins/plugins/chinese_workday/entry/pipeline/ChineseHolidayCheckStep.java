@@ -2,6 +2,7 @@ package io.jenkins.plugins.chinese_workday.entry.pipeline;
 
 import hudson.AbortException;
 import hudson.Extension;
+import hudson.Util;
 import io.jenkins.plugins.chinese_workday.Messages;
 import io.jenkins.plugins.chinese_workday.service.DefaultChineseWorkdayService;
 import io.jenkins.plugins.chinese_workday.support.ChineseWorkdayResolver;
@@ -17,15 +18,18 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 public class ChineseHolidayCheckStep extends Step {
 
-    private final String date;
+    private String date = "";
 
     @DataBoundConstructor
-    public ChineseHolidayCheckStep(String date) {
-        this.date = date;
-    }
+    public ChineseHolidayCheckStep() {}
 
     public String getDate() {
         return date;
+    }
+
+    @org.kohsuke.stapler.DataBoundSetter
+    public void setDate(String date) {
+        this.date = Util.fixNull(date).trim();
     }
 
     @Override
