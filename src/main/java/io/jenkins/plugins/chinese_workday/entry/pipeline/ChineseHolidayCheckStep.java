@@ -1,6 +1,5 @@
 package io.jenkins.plugins.chinese_workday.entry.pipeline;
 
-import hudson.AbortException;
 import hudson.Extension;
 import hudson.Util;
 import io.jenkins.plugins.chinese_workday.Messages;
