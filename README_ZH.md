@@ -1,5 +1,10 @@
 # Chinese Workday Plugin
 
+[![GitHub release](https://img.shields.io/github/v/release/jenkinsci/chinese-workday-plugin?sort=semver)](https://github.com/jenkinsci/chinese-workday-plugin/releases)
+[![Jenkins Plugin Site](https://img.shields.io/badge/Jenkins-Plugin%20Site-D24939?logo=jenkins&logoColor=white)](https://plugins.jenkins.io/chinese-workday)
+[![Jenkins Security Scan](https://github.com/jenkinsci/chinese-workday-plugin/actions/workflows/jenkins-security-scan.yml/badge.svg)](https://github.com/jenkinsci/chinese-workday-plugin/actions/workflows/jenkins-security-scan.yml)
+[![License](https://img.shields.io/github/license/jenkinsci/chinese-workday-plugin)](LICENSE.md)
+
 [English](README.md)
 
 ## 概览
