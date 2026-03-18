@@ -25,8 +25,7 @@ class ChineseWorkdayGlobalConfigurationUiTest {
         HtmlPage page = jenkins.createWebClient().goTo("manage/configure");
 
         // Jenkins repeatable controls may render the add action as either a button or a link.
-        HtmlElement addCalendarButton =
-                page.getFirstByXPath("//button[contains(normalize-space(.), 'Add calendar')]");
+        HtmlElement addCalendarButton = page.getFirstByXPath("//button[contains(normalize-space(.), 'Add calendar')]");
         if (addCalendarButton == null) {
             addCalendarButton = page.getFirstByXPath("//a[contains(normalize-space(.), 'Add calendar')]");
         }
