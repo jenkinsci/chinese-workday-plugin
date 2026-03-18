@@ -1,0 +1,48 @@
+name: Question
+description: Ask a usage, configuration, or development question about the plugin
+title: "[Question]: "
+labels:
+  - question
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for your question.
+        Please share enough context so maintainers can understand your Jenkins setup and what you have already tried.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Question area
+      options:
+        - Pipeline usage
+        - Freestyle usage
+        - System configuration
+        - Holiday calendar data
+        - Plugin development
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: question
+    attributes:
+      label: Your question
+      description: What are you trying to understand or achieve?
+      placeholder: Describe the question and the expected outcome
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Include Pipeline snippets, Freestyle configuration, system configuration details, or links to related docs when relevant
+  - type: textarea
+    id: tried
+    attributes:
+      label: What you already checked
+      description: Mention any docs, examples, logs, or experiments you already reviewed
+      placeholder: |
+        - README.md
+        - README_ZH.md
+        - docs/development.md
+        - Jenkins logs
+

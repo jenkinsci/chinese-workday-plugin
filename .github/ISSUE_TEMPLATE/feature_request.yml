@@ -1,0 +1,31 @@
+name: Feature request
+description: Suggest an enhancement to the plugin
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: What are you trying to achieve in Pipeline, Freestyle, or system configuration?
+      placeholder: Describe the user need or workflow gap
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: What would you like the plugin to do?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Optional
+  - type: textarea
+    id: impact
+    attributes:
+      label: Compatibility or UX impact
+      description: Mention any expected impact on Pipeline steps, Freestyle jobs, system configuration, or existing users

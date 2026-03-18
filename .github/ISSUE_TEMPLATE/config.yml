@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Usage and installation guide
+    url: https://github.com/jenkinsci/chinese-workday-plugin/blob/main/README.md
+    about: Read the plugin overview, installation steps, and usage examples
+  - name: Development guide
+    url: https://github.com/jenkinsci/chinese-workday-plugin/blob/main/docs/development.md
+    about: Read local development workflow and repository structure
+  - name: Calendar maintenance guide
+    url: https://github.com/jenkinsci/chinese-workday-plugin/blob/main/docs/calendar-maintenance.md
+    about: Read bundled holiday calendar maintenance guidance

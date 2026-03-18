@@ -373,10 +373,15 @@ For development notes, code structure, and local workflow details, see:
 
 ## Contributing
 
-Contributions are welcome once the initial plugin direction is stabilized.
+Contributions are welcome. Prefer small, incremental changes that keep plugin behavior stable and
+well-tested.
 
-Until then, prefer small, incremental changes that help replace the starter template with real
-plugin behavior.
+Repository-specific contribution notes:
+
+- `CONTRIBUTING.md`
+- `docs/development.md`
+- `docs/architecture.md`
+- `docs/calendar-maintenance.md`
 
 Refer to the Jenkins community contribution guidelines:
 

@@ -361,9 +361,14 @@ Make-up workdays:
 
 ## 贡献
 
-欢迎在插件方向进一步稳定后参与贡献。
+欢迎贡献。建议优先提交小步、渐进式修改，并保持行为稳定、测试充分。
 
-在此之前，优先提交小步、渐进式修改，帮助仓库持续从模板代码演进为真实插件实现。
+仓库内的贡献说明可参考：
+
+- `CONTRIBUTING.md`
+- `docs/development.md`
+- `docs/architecture.md`
+- `docs/calendar-maintenance.md`
 
 可参考 Jenkins 社区贡献指南：
 

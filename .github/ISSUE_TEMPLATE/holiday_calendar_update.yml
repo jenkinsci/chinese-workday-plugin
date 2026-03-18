@@ -1,0 +1,52 @@
+name: Holiday calendar update
+description: Request a new bundled holiday year or report a bundled calendar data correction
+title: "[Calendar]: "
+labels:
+  - holiday-data
+body:
+  - type: input
+    id: year
+    attributes:
+      label: Calendar year
+      placeholder: e.g. 2027
+    validations:
+      required: true
+  - type: dropdown
+    id: request_type
+    attributes:
+      label: Request type
+      options:
+        - Add a new bundled year
+        - Correct an existing bundled year
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Official source link
+      description: Prefer State Council or other government notice pages
+      placeholder: https://...
+    validations:
+      required: true
+  - type: textarea
+    id: holidays
+    attributes:
+      label: Holiday ranges
+      description: Use ISO dates and `..` for ranges when possible
+      placeholder: |
+        2027-01-01
+        2027-02-10..2027-02-16
+    validations:
+      required: true
+  - type: textarea
+    id: makeup
+    attributes:
+      label: Make-up workdays
+      placeholder: |
+        2027-02-07
+        2027-02-20
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Optional context, screenshots, or interpretation notes for special cases
