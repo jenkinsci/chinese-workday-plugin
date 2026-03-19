@@ -1,0 +1,9 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core">
+    <div class="jenkins-alert jenkins-alert-warning">
+        ${%Warning(it.targetYearText)}
+        ${%Prefix}
+        <a href="${rootURL}/manage/configure">${%ConfigurationLink}</a>
+        ${%Suffix(it.targetYearText)}
+    </div>
+</j:jelly>

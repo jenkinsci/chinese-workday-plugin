@@ -330,6 +330,9 @@ Make-up workdays:
 出于兼容性考虑，插件仍会读取可选的文件覆盖目录
 `$JENKINS_HOME/chinese-workday/calendars/`，但系统配置中的内容优先级高于这些文件。
 
+从每年 12 月开始，如果下一年的日历数据仍不可用，Jenkins 管理员还会看到一条管理提醒。该提醒会指向
+`Manage Jenkins -> System -> Chinese Workday`，便于先补临时配置；如果插件新版本已经内置了该年份，也可以直接升级插件。
+
 ## 常见问题
 
 ### 为什么未来年份会失败？
