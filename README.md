@@ -339,6 +339,11 @@ For compatibility, the plugin still reads optional file-based overrides from
 `$JENKINS_HOME/chinese-workday/calendars/`, and system configuration entries take precedence over
 those files.
 
+Starting in December, Jenkins administrators also see a management warning if the next calendar
+year is still unavailable. The warning points to `Manage Jenkins -> System -> Chinese Workday` so
+you can add a temporary override, or you can upgrade the plugin if a newer release already bundles
+that year.
+
 ## Troubleshooting
 
 ### Why does a future year fail?
