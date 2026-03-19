@@ -42,6 +42,38 @@ When opening a pull request:
 - note any README, help text, or other documentation updates
 - mention compatibility impact if jobs or system configuration may be affected
 
+## Commit messages
+
+Use this format:
+
+```text
+<type>: <description>
+```
+
+Examples:
+
+```text
+feat: add supported years pipeline step
+fix: validate empty configured calendars
+docs: refine pipeline usage examples
+```
+
+Recommended types:
+
+- `feat`: new functionality
+- `fix`: bug fixes
+- `docs`: documentation changes
+- `style`: formatting or style-only changes
+- `refactor`: code restructuring without intended behavior change
+- `test`: test-related changes
+- `chore`: build, tooling, or maintenance changes
+
+Guidelines:
+
+- write commit messages in English
+- keep the description short and action-oriented
+- prefer one focused change per commit when practical
+
 ## Tests
 
 Prefer automated coverage for:
