@@ -1,0 +1,6 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core">
+    ${%Warning(it.targetYear)}
+    <a href="${rootURL}/manage/configure">${%ConfigurationLink}</a>
+    ${%Deadline(it.targetYear)}
+</j:jelly>
