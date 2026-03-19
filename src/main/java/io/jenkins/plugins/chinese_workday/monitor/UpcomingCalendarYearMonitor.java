@@ -36,6 +36,10 @@ public class UpcomingCalendarYearMonitor extends AdministrativeMonitor {
         return targetYear(today());
     }
 
+    public String getTargetYearText() {
+        return Integer.toString(getTargetYear());
+    }
+
     boolean isReminderWindow(LocalDate date) {
         return date.getMonth() == Month.DECEMBER;
     }
