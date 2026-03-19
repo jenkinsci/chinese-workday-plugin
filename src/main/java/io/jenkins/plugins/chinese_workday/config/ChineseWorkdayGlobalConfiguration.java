@@ -50,6 +50,7 @@ public class ChineseWorkdayGlobalConfiguration extends GlobalConfiguration {
 
     @Override
     public boolean configure(StaplerRequest2 request, JSONObject json) throws FormException {
+        setCalendars(null);
         request.bindJSON(this, json);
         validateCalendars();
         save();
