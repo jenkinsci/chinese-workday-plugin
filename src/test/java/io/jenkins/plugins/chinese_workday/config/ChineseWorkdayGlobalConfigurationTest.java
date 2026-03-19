@@ -41,4 +41,12 @@ class ChineseWorkdayGlobalConfigurationTest {
 
         assertEquals(FormValidation.Kind.ERROR, validation.kind);
     }
+
+    @Test
+    void validatesConfiguredYearRequiresHolidayOrMakeUpWorkday(JenkinsRule jenkins) {
+        ChineseWorkdayGlobalConfiguration configuration = ChineseWorkdayGlobalConfiguration.get();
+        FormValidation validation = configuration.doCheckYear("2027", "", "");
+
+        assertEquals(FormValidation.Kind.ERROR, validation.kind);
+    }
 }

@@ -44,11 +44,23 @@ class ConfiguredHolidayCalendarLoaderTest {
     @Test
     void rejectsDuplicateConfiguredYears() {
         ConfiguredHolidayCalendar first = new ConfiguredHolidayCalendar("2027");
+        first.setHolidays("2027-01-01");
         ConfiguredHolidayCalendar second = new ConfiguredHolidayCalendar("2027");
+        second.setHolidays("2027-10-01");
 
         ConfiguredHolidayCalendarLoader loader = new ConfiguredHolidayCalendarLoader(List.of(first, second));
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, loader::loadAll);
         assertTrue(exception.getMessage().contains("Duplicate Chinese workday calendar configuration for year 2027"));
+    }
+
+    @Test
+    void rejectsConfiguredYearWithoutHolidayOrMakeUpWorkday() {
+        ConfiguredHolidayCalendar calendar = new ConfiguredHolidayCalendar("2027");
+
+        ConfiguredHolidayCalendarLoader loader = new ConfiguredHolidayCalendarLoader(List.of(calendar));
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, loader::loadAll);
+        assertTrue(exception.getMessage().contains("Configure at least one holiday or make-up workday for year 2027"));
     }
 }

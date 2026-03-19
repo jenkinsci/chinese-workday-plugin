@@ -57,6 +57,7 @@ public class ConfiguredHolidayCalendar implements Describable<ConfiguredHolidayC
 
     public HolidaySchedule toSchedule() {
         int resolvedYear = resolveYear();
+        validateConfiguredDatesPresent(resolvedYear, holidays, makeUpWorkdays);
         Properties properties = new Properties();
         if (!holidays.isBlank()) {
             properties.setProperty("holidays", holidays);
@@ -111,6 +112,7 @@ public class ConfiguredHolidayCalendar implements Describable<ConfiguredHolidayC
         } catch (IllegalArgumentException ex) {
             return;
         }
+        validateConfiguredDatesPresent(resolvedYear, holidays, makeUpWorkdays);
 
         Properties properties = new Properties();
         String normalizedHolidays = normalizeDateList(holidays);
@@ -122,6 +124,14 @@ public class ConfiguredHolidayCalendar implements Describable<ConfiguredHolidayC
             properties.setProperty("makeUpWorkdays", normalizedMakeUpWorkdays);
         }
         HolidayCalendarParser.parse(resolvedYear, properties, sourceDescription(trimmedYear));
+    }
+
+    private static void validateConfiguredDatesPresent(int year, String holidays, String makeUpWorkdays) {
+        if (normalizeDateList(holidays).isBlank()
+                && normalizeDateList(makeUpWorkdays).isBlank()) {
+            throw new IllegalArgumentException(
+                    "Configure at least one holiday or make-up workday for year " + year + ".");
+        }
     }
 
     public static String normalizeDateList(String value) {
