@@ -9,45 +9,42 @@
 
 ## Overview
 
-The plugin provides Chinese workday checks for Jenkins Pipelines, Freestyle jobs, and
-administrator-managed calendar overrides.
+Chinese Workday Plugin lets Jenkins follow Chinese statutory holidays and make-up workdays instead of relying on plain weekday/weekend rules. Use it when a Pipeline stage, scheduled job, or future-date check should respect the China holiday calendar.
 
-Current capabilities:
+At a glance:
 
-- bundled Chinese holiday calendars for `2020` through `2026`
-- Pipeline steps for `isChineseWorkday(...)`, `isChineseHoliday(...)`, and `chineseWorkdaySupportedYears()`
-- Freestyle build step support
-- Jenkins system configuration for adding or overriding year-specific holiday calendars
+- bundled calendars for `2020` through `2026`
+- Pipeline steps: `isChineseWorkday(...)`, `isChineseHoliday(...)`, and `chineseWorkdaySupportedYears()`
+- Jenkins system configuration for adding or overriding year-specific calendars
+- optional file-based overrides still supported for compatibility
+
+## Common use cases
+
+- run release or deploy stages only on Chinese workdays
+- skip scheduled jobs on Chinese holidays or adjusted non-workdays
+- add a temporary next-year calendar before a newer plugin release is installed
 
 ## Installation
 
-Choose one of these installation methods:
-
 ### Option 1: Install from the Jenkins Plugin Center
-
-If the plugin is available in your Jenkins update center:
 
 1. Open `Manage Jenkins -> Plugins`
 2. Search for `Chinese Workday`
-3. Select the plugin and install it
-4. Restart Jenkins if prompted
-
-If the plugin is not available in your update center yet, use the manual upload option below.
+3. Install the plugin and restart Jenkins if prompted
 
 ### Option 2: Manually upload an `hpi` package
 
-First build the plugin locally:
+Build the plugin locally:
 
 ```bash
 mvn package
 ```
 
-After the build completes, upload the generated `.hpi` from `target/` in Jenkins, for example
-`target/chinese-workday.hpi`:
+Then upload the generated `.hpi` from `target/` in Jenkins, for example `target/chinese-workday.hpi`:
 
 1. Open `Manage Jenkins -> Plugins`
-2. Open the `Advanced settings` section
-3. In `Deploy Plugin`, choose the generated `.hpi` file
+2. Open `Advanced settings`
+3. In `Deploy Plugin`, choose the `.hpi` file
 4. Upload the plugin and restart Jenkins if prompted
 
 ## Quick start
@@ -77,27 +74,36 @@ pipeline {
 }
 ```
 
+## Missing next-year data?
+
+- unsupported years fail explicitly instead of silently falling back to weekend-only logic
+- use `chineseWorkdaySupportedYears()` before checking a future date
+- add a temporary year in `Manage Jenkins -> System -> Chinese Workday`
+- starting in December, Jenkins administrators see a reminder if next year is still unavailable
+
 ## Behavior summary
 
 - default time zone: `Asia/Shanghai`
 - data precedence: bundled resources < external files < Jenkins system configuration
-- unsupported years fail explicitly instead of silently falling back to weekend-only logic
+- configured years override bundled data for the same year
 
 ## Usage
 
-### Pipeline: step overview
+### Pipeline
 
-- `isChineseWorkday(...)`: check whether today or a specific date is a Chinese workday
-- `isChineseHoliday(...)`: check whether today or a specific date is a Chinese non-workday
-- `chineseWorkdaySupportedYears()`: list bundled and configured calendar years that are available
+Choose the step by intent:
 
-### Pipeline: workday check
+- `isChineseWorkday(...)`: `true` for a Chinese workday
+- `isChineseHoliday(...)`: `true` for a Chinese holiday or adjusted non-workday
+- `chineseWorkdaySupportedYears()`: available bundled and configured years
 
-Use `isChineseWorkday(...)` when you want a boolean result in Pipeline. `date` is optional; when omitted
-it uses the current date in `Asia/Shanghai`. The step does not expose a separate time zone
-parameter.
+Notes:
 
-Default-date example:
+- all Pipeline steps use `Asia/Shanghai`
+- `date` is optional; when omitted, the step checks today
+- unsupported years fail explicitly
+
+#### Check today
 
 ```groovy
 def todayIsWorkday = isChineseWorkday()
@@ -108,90 +114,34 @@ if (!todayIsWorkday) {
 }
 ```
 
-Example with an explicit date:
-
-```groovy
-def result = isChineseWorkday(date: '2025-10-03')
-
-echo "workday=${result}"
-
-if (!result) {
-    echo 'Skip release actions on non-workdays.'
-}
-```
-
-Return value semantics:
-
-- `true`: the date is a Chinese workday
-- `false`: the date is a Chinese non-workday
-- unsupported year: the step fails with an error
-
-### Pipeline: holiday check
-
-Use `isChineseHoliday(...)` when you want a boolean "non-workday" result. `date` is optional; when omitted
-it uses the current date in `Asia/Shanghai`. The step does not expose a separate time zone
-parameter.
-
-Default-date example:
-
-```groovy
-if (isChineseHoliday()) {
-    echo 'Today is a Chinese holiday or adjusted non-workday.'
-}
-```
-
-Example with an explicit date:
+#### Check a specific date
 
 ```groovy
 def holiday = isChineseHoliday(date: '2025-10-03')
 echo "holiday=${holiday}"
 ```
 
-Return value semantics:
-
-- `true`: the date is a Chinese holiday / non-workday
-- `false`: the date is a Chinese workday
-- unsupported year: the step fails with an error
-
-### Pipeline: supported years
-
-Use `chineseWorkdaySupportedYears()` to query which bundled and custom calendars are available.
-
-```groovy
-def years = chineseWorkdaySupportedYears()
-echo "supportedYears=${years.join(',')}"
-```
-
-### Pipeline: use cases
-
-#### Run a scheduled job only on Chinese workdays
-
-This is useful for recurring tasks such as reports, sync jobs, or weekday-only release trains.
+#### Gate a stage with `when`
 
 ```groovy
 pipeline {
     agent any
-    triggers {
-        cron('H 9 * * *')
-    }
     stages {
-        stage('Daily Sync') {
+        stage('Release') {
             when {
                 expression {
                     isChineseWorkday()
                 }
             }
             steps {
-                echo 'Run the scheduled job on a Chinese workday.'
+                echo 'Release runs only on a Chinese workday.'
             }
         }
     }
 }
 ```
 
-#### Compute once, then gate later stages
-
-This pattern is useful when several later stages depend on the same decision.
+#### Reuse one decision across later stages
 
 ```groovy
 pipeline {
@@ -201,7 +151,6 @@ pipeline {
             steps {
                 script {
                     env.RUN_RELEASE = isChineseWorkday() ? 'true' : 'false'
-                    echo "runRelease=${env.RUN_RELEASE}"
                 }
             }
         }
@@ -215,44 +164,11 @@ pipeline {
                 echo 'Release is enabled for today.'
             }
         }
-        stage('Notify Skip') {
-            when {
-                expression {
-                    env.RUN_RELEASE != 'true'
-                }
-            }
-            steps {
-                echo 'Release is skipped because today is a Chinese non-workday.'
-            }
-        }
-    }
-}
-```
-
-#### Guard a scripted Pipeline stage
-
-If you use Scripted Pipeline, you can decide whether to enter a stage at all.
-
-```groovy
-node {
-    stage('Build') {
-        echo 'Build runs every day.'
-    }
-
-    if (isChineseWorkday()) {
-        stage('Release') {
-            echo 'Release runs only on a Chinese workday.'
-        }
-    } else {
-        echo 'Skip Release stage on a Chinese non-workday.'
     }
 }
 ```
 
 #### Check future-year support before using a custom date
-
-This is useful when you run jobs against future schedules that may depend on administrator-provided
-calendar data.
 
 ```groovy
 def targetYear = 2027
@@ -265,21 +181,14 @@ if (!years.contains(targetYear)) {
 echo "isWorkday=${isChineseWorkday(date: '2027-10-02')}"
 ```
 
-### Freestyle: build step
+### Freestyle
 
 Add the build step `Chinese Workday Check`.
 
-Available fields:
+- `Date`: optional, ISO `yyyy-MM-dd`; blank means today in `Asia/Shanghai`
+- `Fail build on non-workday`: fail the step so later Freestyle steps do not run
 
-- `Date`: optional, ISO format `yyyy-MM-dd`; blank means "today" in `Asia/Shanghai`
-- `Fail build on non-workday`: optional; if enabled, the build step fails on non-workdays so later
-  Freestyle build steps do not run
-
-Example:
-
-- `Date`: `2025-10-03`
-
-Example build log output:
+Example build log:
 
 ```text
 Chinese Workday check
@@ -291,33 +200,29 @@ Holiday: true
 
 ## System configuration
 
-Administrators can add or override holiday calendars in `Manage Jenkins -> System -> Chinese Workday`.
+Administrators can add or override calendars in `Manage Jenkins -> System -> Chinese Workday`.
 
-Recommended steps:
+Quick steps:
 
 1. Open `Manage Jenkins -> System`
-2. Find the `Chinese Workday` section
-3. Click `Add calendar`
-4. Fill in the target year plus holiday and make-up workday dates
-5. Save the system configuration
+2. Find `Chinese Workday` and click `Add calendar`
+3. Fill in the year, holidays, and make-up workdays, then save
 
-Each calendar entry includes:
+Fields:
 
-- `Year`: the calendar year, for example `2027`
+- `Year`: target calendar year, for example `2027`
 - `Holidays`: ISO dates or date ranges using `..`
-- `Make-up workdays`: ISO dates or date ranges using `..` that should be treated as workdays even
-  if they fall on weekends
+- `Make-up workdays`: dates that should be treated as workdays even on weekends
 
-Input format rules:
+Rules:
 
-- dates must use ISO format `yyyy-MM-dd`
-- date ranges use `..`, for example `2027-10-01..2027-10-07`
-- separate dates with commas or new lines
-- every date in a `2027` entry must belong to year `2027`
+- use ISO format `yyyy-MM-dd`
+- use `..` for ranges, for example `2027-10-01..2027-10-07`
+- separate entries with commas or new lines
+- every date in a year entry must belong to that year
 - a date cannot appear in both `Holidays` and `Make-up workdays`
-- a configured year overrides the bundled calendar for the same year
 
-Example entry:
+Example:
 
 ```text
 Year: 2027
@@ -333,67 +238,32 @@ Make-up workdays:
 2027-09-26
 ```
 
-After saving the system configuration, the next build or Pipeline step uses the new calendar data.
+After saving, new builds use the updated calendar. For compatibility, the plugin still reads optional file overrides from `$JENKINS_HOME/chinese-workday/calendars/`, but Jenkins system configuration has higher priority.
 
-For compatibility, the plugin still reads optional file-based overrides from
-`$JENKINS_HOME/chinese-workday/calendars/`, and system configuration entries take precedence over
-those files.
-
-Starting in December, Jenkins administrators also see a management warning if the next calendar
-year is still unavailable. The warning points to `Manage Jenkins -> System -> Chinese Workday` so
-you can add a temporary override, or you can upgrade the plugin if a newer release already bundles
-that year.
+Starting in December, Jenkins administrators also see a management warning if next year is still unavailable. The warning links to `Manage Jenkins -> System -> Chinese Workday` so you can add a temporary override or upgrade the plugin if a newer release already bundles that year.
 
 ## Troubleshooting
 
-### Why does a future year fail?
-
-If a year such as `2027` is not bundled yet and you have not configured an override, the plugin
-fails explicitly instead of guessing. In that case, add a temporary calendar under
-`Manage Jenkins -> System -> Chinese Workday`.
-
-### Why can a weekend still be a workday?
-
-Chinese make-up workdays can fall on weekends. Those dates are checked before normal weekend
-fallback rules.
-
-### Why does Jenkins system configuration override bundled data?
-
-This is intentional. The effective precedence is:
-
-```text
-bundled < external file < system config
-```
-
-This lets administrators correct or extend data without rebuilding the plugin.
+- future year missing: add a temporary calendar in `Manage Jenkins -> System -> Chinese Workday`
+- weekend returned as a workday: some Chinese make-up workdays fall on weekends
+- system configuration overrides bundled data by design: `bundled < external file < system config`
 
 ## Holiday data maintenance
 
-Bundled holiday data should be updated through a documented review process rather than ad hoc file
-edits. For the source policy, yearly update checklist, and validation flow, see
-`docs/calendar-maintenance.md`.
+Bundled holiday data should be updated through a documented review process rather than ad hoc file edits. For the source policy, yearly update checklist, and validation flow, see `docs/calendar-maintenance.md`.
 
-## Development
+## Development and contributing
 
-For development notes, code structure, and local workflow details, see:
+Contributions are welcome. Prefer small, incremental changes that keep behavior stable and well-tested.
 
-- `docs/development.md`
-- `docs/architecture.md`
-- `docs/calendar-maintenance.md`
-
-## Contributing
-
-Contributions are welcome. Prefer small, incremental changes that keep plugin behavior stable and
-well-tested.
-
-Repository-specific contribution notes:
+Useful repository docs:
 
 - `CONTRIBUTING.md`
 - `docs/development.md`
 - `docs/architecture.md`
 - `docs/calendar-maintenance.md`
 
-Refer to the Jenkins community contribution guidelines:
+Jenkins community guidelines:
 
 - https://github.com/jenkinsci/.github/blob/master/CONTRIBUTING.md
 
