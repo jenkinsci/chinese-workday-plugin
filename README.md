@@ -1,3 +1,4 @@
+![chinese-workday-plugin](images/chinese-workday-plugin.png)
 # Chinese Workday Plugin
 
 [![GitHub release](https://img.shields.io/github/v/release/jenkinsci/chinese-workday-plugin?sort=semver)](https://github.com/jenkinsci/chinese-workday-plugin/releases)
