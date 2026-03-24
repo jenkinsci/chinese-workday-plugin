@@ -42,7 +42,6 @@ body:
       description: Mention any docs, examples, logs, or experiments you already reviewed
       placeholder: |
         - README.md
-        - README_ZH.md
+        - README_EN.md
         - docs/development.md
         - Jenkins logs
-

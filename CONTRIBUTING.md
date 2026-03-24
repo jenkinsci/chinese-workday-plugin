@@ -6,7 +6,7 @@ Thanks for contributing to the Chinese Workday plugin.
 
 - Use JDK `17+`
 - Use Maven `3.9.6+`
-- Read `README.md` or `README_ZH.md` for plugin features and user-facing usage
+- Read `README.md` or `README_EN.md` for plugin features and user-facing usage
 
 ## Local development
 

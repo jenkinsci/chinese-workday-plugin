@@ -55,7 +55,7 @@ mvn hpi:run
 
 Key documents:
 
-- `README.md` and `README_ZH.md` for plugin overview, installation, and usage
+- `README.md` and `README_EN.md` for plugin overview, installation, and usage
 - `docs/architecture.md` for runtime design, data flow, and core decisions
 - `docs/calendar-maintenance.md` for bundled holiday data updates
 
