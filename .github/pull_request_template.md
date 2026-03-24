@@ -32,7 +32,7 @@ Describe how you verified the change.
 <!--
 Mention whether any user-facing docs or help content were updated, for example:
 - `README.md`
-- `README_ZH.md`
+- `README_EN.md`
 - Jelly help pages under `src/main/resources` or `src/main/webapp`
 -->
 
