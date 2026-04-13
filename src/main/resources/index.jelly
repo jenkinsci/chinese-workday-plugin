@@ -1,6 +1,6 @@
 <?jelly escape-by-default='true'?>
 <div>
     Chinese Workday Plugin currently provides bundled Chinese holiday and make-up workday calendars
-    for 2025 and 2026. Additional years can be added in Manage Jenkins -> System -> Chinese
-    Workday.
+    for 2020 through 2026. Additional years can be added in Manage Jenkins -> System ->
+    Chinese Workday.
 </div>
