@@ -17,3 +17,6 @@ work
 # AI
 .codex
 .specify
+
+# macOS
+.DS_Store

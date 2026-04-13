@@ -34,13 +34,13 @@
 - `src/main/resources/`：Jelly 页面、帮助文档、国际化资源
 - `src/test/java/`：单元测试与 JenkinsRule 测试
 - `src/main/resources/io/jenkins/plugins/chinese_workday/calendars/`：内置年份日历资源
-- `src/main/resources/io/jenkins/plugins/chinese_workday/ChineseWorkdayGlobalConfiguration/`：系统配置页面与帮助文档
+- `src/main/resources/io/jenkins/plugins/chinese_workday/config/ChineseWorkdayGlobalConfiguration/`：系统配置页面与帮助文档
 - `README.md`：对外说明与安装、配置、使用文档
 
 ## 开发建议
 
 - 新功能优先做成可测试的 Jenkins Step、Builder 或相关扩展点。
-- 当前同时提供 Builder 和专用 Pipeline Step；涉及 Pipeline 结果消费时，优先使用 `isWorkday` 或 `isHoliday`；涉及年份发现时使用 `chineseWorkdaySupportedYears`。
+- 当前同时提供 Builder 和专用 Pipeline Step；涉及 Pipeline 结果消费时，优先使用 `isChineseWorkday` 或 `isChineseHoliday`；涉及年份发现时使用 `chineseWorkdaySupportedYears`。
 - 涉及管理员维护年份时，优先扩展 `ChineseWorkdayGlobalConfiguration` 与相关数据模型，而不是继续增加必须登录服务器改文件的路径。
 - 每增加一个配置项，同时补齐：
   - 数据绑定
