@@ -57,7 +57,7 @@ Key documents:
 
 - `README.md` and `README_EN.md` for plugin overview, installation, and usage
 - `docs/architecture.md` for runtime design, data flow, and core decisions
-- `docs/calendar-maintenance.md` for bundled holiday data updates
+- `docs/calendar-maintenance.en.md` for bundled holiday data updates
 
 Key directories:
 
