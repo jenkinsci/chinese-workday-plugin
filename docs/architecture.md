@@ -210,4 +210,4 @@ When extending the plugin:
 - keep parsing and input validation in `parser/` and `model/`
 - preserve the precedence rule `bundled < external file < system config`
 
-For annual holiday data updates, see `docs/calendar-maintenance.md`.
+For annual holiday data updates, see `docs/calendar-maintenance.en.md`.

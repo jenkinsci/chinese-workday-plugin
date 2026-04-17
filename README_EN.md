@@ -251,7 +251,7 @@ Starting in December, Jenkins administrators also see a management warning if ne
 
 ## Holiday data maintenance
 
-Bundled holiday data should be updated through a documented review process rather than ad hoc file edits. For the source policy, yearly update checklist, and validation flow, see `docs/calendar-maintenance.md`.
+Bundled holiday data should be updated through a documented review process rather than ad hoc file edits. For the source policy, yearly update checklist, and validation flow, see `docs/calendar-maintenance.en.md`.
 
 ## Development and contributing
 
@@ -262,7 +262,7 @@ Useful repository docs:
 - `CONTRIBUTING.md`
 - `docs/development.md`
 - `docs/architecture.md`
-- `docs/calendar-maintenance.md`
+- `docs/calendar-maintenance.en.md`
 
 Jenkins community guidelines:
 
