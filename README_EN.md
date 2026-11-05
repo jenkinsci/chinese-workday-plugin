@@ -15,7 +15,7 @@ Chinese Workday Plugin lets Jenkins follow Chinese statutory holidays and make-u
 
 At a glance:
 
-- bundled calendars for `2020` through `2026`
+- bundled calendars for `2020` through `2027`
 - Pipeline steps: `isChineseWorkday(...)`, `isChineseHoliday(...)`, and `chineseWorkdaySupportedYears()`
 - Jenkins system configuration for adding or overriding year-specific calendars
 - optional file-based overrides still supported for compatibility
@@ -173,14 +173,14 @@ pipeline {
 #### Check future-year support before using a custom date
 
 ```groovy
-def targetYear = 2027
+def targetYear = 2028
 def years = chineseWorkdaySupportedYears()
 
 if (!years.contains(targetYear)) {
     error "Chinese workday calendar for ${targetYear} is not configured yet."
 }
 
-echo "isWorkday=${isChineseWorkday(date: '2027-10-02')}"
+echo "isWorkday=${isChineseWorkday(date: '2028-10-02')}"
 ```
 
 ### Freestyle
@@ -212,14 +212,14 @@ Quick steps:
 
 Fields:
 
-- `Year`: target calendar year, for example `2027`
+- `Year`: target calendar year, for example `2028`
 - `Holidays`: ISO dates or date ranges using `..`
 - `Make-up workdays`: dates that should be treated as workdays even on weekends
 
 Rules:
 
 - use ISO format `yyyy-MM-dd`
-- use `..` for ranges, for example `2027-10-01..2027-10-07`
+- use `..` for ranges, for example `2028-10-01..2028-10-07`
 - separate entries with commas or new lines
 - every date in a year entry must belong to that year
 - a date cannot appear in both `Holidays` and `Make-up workdays`
@@ -227,17 +227,17 @@ Rules:
 Example:
 
 ```text
-Year: 2027
+Year: 2028
 Holidays:
-2027-01-01
-2027-02-10..2027-02-16
-2027-04-05
-2027-10-01..2027-10-07
+2028-01-01
+2028-02-10..2028-02-16
+2028-04-05
+2028-10-01..2028-10-07
 
 Make-up workdays:
-2027-02-07
-2027-02-20
-2027-09-26
+2028-02-07
+2028-02-20
+2028-09-26
 ```
 
 After saving, new builds use the updated calendar. For compatibility, the plugin still reads optional file overrides from `$JENKINS_HOME/chinese-workday/calendars/`, but Jenkins system configuration has higher priority.

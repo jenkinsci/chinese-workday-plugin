@@ -56,7 +56,7 @@ class ChineseWorkdayBuilderTest {
         FreeStyleBuild build = jenkins.assertBuildStatus(Result.FAILURE, project.scheduleBuild2(0));
 
         jenkins.assertLogContains("No Chinese holiday calendar is available for 2030.", build);
-        jenkins.assertLogContains("Supported years: 2020, 2021, 2022, 2023, 2024, 2025, 2026", build);
+        jenkins.assertLogContains("Supported years: 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027", build);
         jenkins.assertLogContains("Manage Jenkins > System > Chinese Workday", build);
     }
 
@@ -140,12 +140,12 @@ class ChineseWorkdayBuilderTest {
 
         WorkflowRun build = jenkins.assertBuildStatusSuccess(job.scheduleBuild2(0));
 
-        jenkins.assertLogContains("years=2020,2021,2022,2023,2024,2025,2026", build);
+        jenkins.assertLogContains("years=2020,2021,2022,2023,2024,2025,2026,2027", build);
     }
 
     @Test
     void supportedYearsPipelineStepIncludesConfiguredYears(JenkinsRule jenkins) throws Exception {
-        configureGlobalCalendar(2027, "2027-10-01..2027-10-03", "2027-09-26");
+        configureGlobalCalendar(2028, "2028-10-01..2028-10-03", "2028-09-30");
 
         WorkflowJob job = jenkins.createProject(WorkflowJob.class, "test-supported-years-step-with-configured");
         String pipelineScript = """
@@ -156,17 +156,17 @@ class ChineseWorkdayBuilderTest {
 
         WorkflowRun build = jenkins.assertBuildStatusSuccess(job.scheduleBuild2(0));
 
-        jenkins.assertLogContains("years=2020,2021,2022,2023,2024,2025,2026,2027", build);
+        jenkins.assertLogContains("years=2020,2021,2022,2023,2024,2025,2026,2027,2028", build);
     }
 
     @Test
     void pipelineStepReadsConfiguredCalendarYear(JenkinsRule jenkins) throws Exception {
-        configureGlobalCalendar(2027, "2027-10-01..2027-10-03", "2027-09-26");
+        configureGlobalCalendar(2028, "2028-10-01..2028-10-03", "2028-09-30");
 
         WorkflowJob job = jenkins.createProject(WorkflowJob.class, "test-configured-year-step");
         String pipelineScript = """
-                echo "workday=${isChineseWorkday(date: '2027-10-02')}"
-                echo "makeUp=${isChineseWorkday(date: '2027-09-26')}"
+                echo "workday=${isChineseWorkday(date: '2028-10-02')}"
+                echo "makeUp=${isChineseWorkday(date: '2028-09-30')}"
                 """;
         job.setDefinition(new CpsFlowDefinition(pipelineScript, true));
 

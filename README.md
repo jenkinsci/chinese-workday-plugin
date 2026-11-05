@@ -16,7 +16,7 @@ Chinese Workday Plugin 让 Jenkins 在判断是否执行任务时，按中国法
 
 快速了解：
 
-- 内置 `2020` 至 `2026` 年中国节假日与调休日历
+- 内置 `2020` 至 `2027` 年中国节假日与调休日历
 - 提供 `isChineseWorkday(...)`、`isChineseHoliday(...)` 和 `chineseWorkdaySupportedYears()` 等 Pipeline 步骤
 - 支持在 Jenkins 系统配置中新增或覆盖指定年份日历
 - 仍兼容 `$JENKINS_HOME/chinese-workday/calendars/` 文件覆盖方式
@@ -174,14 +174,14 @@ pipeline {
 #### 判断未来日期前，先确认年份是否已支持
 
 ```groovy
-def targetYear = 2027
+def targetYear = 2028
 def years = chineseWorkdaySupportedYears()
 
 if (!years.contains(targetYear)) {
     error "Chinese workday calendar for ${targetYear} is not configured yet."
 }
 
-echo "isWorkday=${isChineseWorkday(date: '2027-10-02')}"
+echo "isWorkday=${isChineseWorkday(date: '2028-10-02')}"
 ```
 
 ### Freestyle
@@ -213,14 +213,14 @@ Holiday: true
 
 字段说明：
 
-- `Year`：目标年份，例如 `2027`
+- `Year`：目标年份，例如 `2028`
 - `Holidays`：ISO 日期或使用 `..` 的日期范围
 - `Make-up workdays`：即使落在周末也要按工作日处理的日期
 
 填写规则：
 
 - 日期格式必须为 `yyyy-MM-dd`
-- 日期范围使用 `..`，例如 `2027-10-01..2027-10-07`
+- 日期范围使用 `..`，例如 `2028-10-01..2028-10-07`
 - 多个日期可用逗号或换行分隔
 - 某一年的条目中，所有日期都必须属于该年份
 - 同一个日期不能同时出现在 `Holidays` 和 `Make-up workdays` 中
@@ -228,17 +228,17 @@ Holiday: true
 示例：
 
 ```text
-Year: 2027
+Year: 2028
 Holidays:
-2027-01-01
-2027-02-10..2027-02-16
-2027-04-05
-2027-10-01..2027-10-07
+2028-01-01
+2028-02-10..2028-02-16
+2028-04-05
+2028-10-01..2028-10-07
 
 Make-up workdays:
-2027-02-07
-2027-02-20
-2027-09-26
+2028-02-07
+2028-02-20
+2028-09-26
 ```
 
 保存后，后续构建会立即使用新日历。出于兼容性考虑，插件仍会读取 `$JENKINS_HOME/chinese-workday/calendars/` 下的可选文件覆盖，但 Jenkins 系统配置优先级更高。
