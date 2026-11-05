@@ -13,11 +13,11 @@ This document describes how to add or update bundled Chinese holiday calendars.
 
 ## Update Checklist
 
-When adding a new bundled year such as `2027`:
+When adding a new bundled year such as `2028`:
 
 1. Find the official holiday notice for that year
 2. Confirm all holiday ranges and make-up workdays from the notice
-3. Add `src/main/resources/io/jenkins/plugins/chinese_workday/calendars/2027.properties`
+3. Add `src/main/resources/io/jenkins/plugins/chinese_workday/calendars/2028.properties`
 4. Add a `# Source: ...` comment at the top of the file
 5. Update `src/main/resources/io/jenkins/plugins/chinese_workday/calendars/index.properties`
 6. Add or update automated tests that cover representative holidays and make-up workdays
@@ -31,20 +31,20 @@ Example:
 ```properties
 # Source: https://www.gov.cn/example-notice
 holidays=\
-  2027-01-01,\
-  2027-02-10..2027-02-16,\
-  2027-10-01..2027-10-07
+  2028-01-01,\
+  2028-02-10..2028-02-16,\
+  2028-10-01..2028-10-07
 makeUpWorkdays=\
-  2027-02-07,\
-  2027-02-20,\
-  2027-09-26
+  2028-02-07,\
+  2028-02-20,\
+  2028-09-26
 ```
 
 Rules:
 
 - use ISO dates in `yyyy-MM-dd`
 - use `..` for ranges
-- every date in `2027.properties` must belong to `2027`
+- every date in `2028.properties` must belong to `2028`
 - a date cannot appear in both `holidays` and `makeUpWorkdays`
 - keep entries readable; multi-line values are preferred for bundled data files
 
