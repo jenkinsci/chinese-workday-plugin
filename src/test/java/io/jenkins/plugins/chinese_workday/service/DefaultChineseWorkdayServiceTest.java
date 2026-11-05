@@ -15,14 +15,14 @@ class DefaultChineseWorkdayServiceTest {
 
     @Test
     void loadsFutureYearFromSystemConfigurationCalendars() {
-        DefaultChineseWorkdayService service = service(calendar(2027, """
-                holidays=2027-01-01,2027-10-01..2027-10-03
-                makeUpWorkdays=2027-09-26
+        DefaultChineseWorkdayService service = service(calendar(2028, """
+                holidays=2028-01-01,2028-10-01..2028-10-03
+                makeUpWorkdays=2028-09-30
                 """));
 
-        assertFalse(service.isWorkday(LocalDate.of(2027, 10, 2)));
-        assertTrue(service.isWorkday(LocalDate.of(2027, 9, 26)));
-        assertEquals(List.of(2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027), service.supportedYears());
+        assertFalse(service.isWorkday(LocalDate.of(2028, 10, 2)));
+        assertTrue(service.isWorkday(LocalDate.of(2028, 9, 30)));
+        assertEquals(List.of(2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028), service.supportedYears());
     }
 
     @Test

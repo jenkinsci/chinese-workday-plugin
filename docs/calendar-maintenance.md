@@ -13,11 +13,11 @@
 
 ## 更新清单
 
-新增内置年份（例如 `2027`）时，请按以下步骤执行：
+新增内置年份（例如 `2028`）时，请按以下步骤执行：
 
 1. 找到该年度的官方节假日通知
 2. 根据通知确认全部放假区间和调休上班日期
-3. 新增 `src/main/resources/io/jenkins/plugins/chinese_workday/calendars/2027.properties`
+3. 新增 `src/main/resources/io/jenkins/plugins/chinese_workday/calendars/2028.properties`
 4. 在文件顶部添加 `# Source: ...` 注释
 5. 更新 `src/main/resources/io/jenkins/plugins/chinese_workday/calendars/index.properties`
 6. 新增或更新自动化测试，覆盖代表性的节假日和调休工作日
@@ -31,20 +31,20 @@
 ```properties
 # Source: https://www.gov.cn/example-notice
 holidays=\
-  2027-01-01,\
-  2027-02-10..2027-02-16,\
-  2027-10-01..2027-10-07
+  2028-01-01,\
+  2028-02-10..2028-02-16,\
+  2028-10-01..2028-10-07
 makeUpWorkdays=\
-  2027-02-07,\
-  2027-02-20,\
-  2027-09-26
+  2028-02-07,\
+  2028-02-20,\
+  2028-09-26
 ```
 
 规则：
 
 - 日期使用 ISO 格式 `yyyy-MM-dd`
 - 日期区间使用 `..`
-- `2027.properties` 中的所有日期都必须属于 `2027` 年
+- `2028.properties` 中的所有日期都必须属于 `2028` 年
 - 同一个日期不能同时出现在 `holidays` 和 `makeUpWorkdays` 中
 - 为了可读性，内置数据文件优先采用多行书写格式
 
